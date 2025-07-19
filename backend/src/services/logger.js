@@ -1,29 +1,30 @@
-const winston = require('winston');
+import winston from 'winston';
+import path from 'path';
 
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.json(),
-    defaultMeta: { service: 'user-service' },
-    transports: [
-        //
-        // - Write all logs with importance level of `error` or higher to `error.log`
-        //   (i.e., error, fatal, but not other levels)
-        //
-        new winston.transports.File({ filename: 'error.log', level: 'error' }),
-        //
-        // - Write all logs with importance level of `info` or higher to `combined.log`
-        //   (i.e., fatal, error, warn, and info, but not trace)
-        //
-        new winston.transports.File({ filename: 'combined.log' }),
-    ],
-});
+const logsDir = path.resolve(process.cwd(), 'logs');
 
-//
-// If we're not in production then log to the `console` with the format:
-// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
+const createLogger = (serviceName, level = 'info') => {
+    return winston.createLogger({
+        level,
+        format: winston.format.json(),
+        defaultMeta: { service: serviceName },
+        transports: [
+            new winston.transports.File({ filename: path.join(logsDir, `${serviceName}-error.log`), level: 'error' }),
+            new winston.transports.File({ filename: path.join(logsDir, `${serviceName}-combined.log`) }),
+        ],
+    });
+};
+
 if (process.env.NODE_ENV !== 'production') {
-    logger.add(new winston.transports.Console({
+    const consoleTransport = new winston.transports.Console({
         format: winston.format.simple(),
-    }));
+    });
+    ['http', 'auth', 'db', 'server'].forEach(service =>
+        createLogger(service).add(consoleTransport),
+    );
 }
+
+export const serverLogger = createLogger('server');
+export const httpLogger = createLogger('http');
+export const authLogger = createLogger('auth');
+export const dbLogger = createLogger('db');
