@@ -1,3 +1,46 @@
-/.github/copilot-instructions.md
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+coverage/
+.env
+.env.*
+.DS_Store
 
-node_modules
+# Prisma
+prisma/generated/
+prisma/migrations/
+prisma/.env
+
+# Docker
+docker-compose.override.yml
+docker-compose.local.yml
+*.local.yml
+
+# Logs
+logs/
+*.log
+
+# Redis
+dump.rdb
+redis.conf
+
+# PostgreSQL
+*.sql
+*.db
+
+# VSCode/WebStorm/IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+Thumbs.db
+ehthumbs.db
+
+# Others
+/.github/copilot-instructions.md
