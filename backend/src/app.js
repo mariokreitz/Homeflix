@@ -3,6 +3,7 @@ import { devRequestLogger, requestLogger } from './middlewares/requestLogger.mid
 import session from 'express-session';
 import { getSessionStore, initSessionStore } from './middlewares/session.middleware.js';
 import { isProduction, SESSION_SECRET } from './config/env.config.js';
+import { connectPrisma } from './services/prisma.service.js';
 
 const app = express();
 
@@ -10,7 +11,7 @@ const app = express();
 app.use(requestLogger);
 app.use(devRequestLogger);
 
-
+await connectPrisma();
 await initSessionStore();
 app.use(
     session({
