@@ -9,6 +9,8 @@ import { connectPrisma } from './services/prisma.service.js';
 import { createApiRateLimiter } from './middlewares/rateLimit.middleware.js';
 import { setupSwagger } from './config/swagger.config.js';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.middleware.js';
+import authRouter from './routes/auth.routes.js';
+import passport from 'passport';
 
 const app = express();
 
@@ -133,6 +135,8 @@ async function initializeApp() {
         setupLogging(app);
         setupParsers(app);
 
+        app.use(passport.initialize());
+
         await connectPrisma();
         await initSessionStore();
         setupSession(app);
@@ -142,7 +146,7 @@ async function initializeApp() {
 
         // Register API routes here
         // app.use('/api/v1/media', mediaRouter);
-        // app.use('/api/v1/auth', authRouter);
+        app.use('/api/v1/auth', authRouter);
 
         setupNotFoundHandler(app);
         app.use(errorHandlerMiddleware);

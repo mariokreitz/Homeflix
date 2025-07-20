@@ -36,7 +36,7 @@ function getSwaggerOptions(version) {
                 contact: { name: 'Homeflix Team' },
             },
             servers: [
-                { url: '/api/v1', description: 'API v1' },
+                { url: '/', description: 'API v1' },
             ],
             components: {
                 securitySchemes: {

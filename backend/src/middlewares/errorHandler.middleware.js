@@ -1,4 +1,3 @@
-import { isProduction } from '../config/env.config.js';
 import { serverLogger } from '../services/logger.service.js';
 
 /**
@@ -8,9 +7,8 @@ import { serverLogger } from '../services/logger.service.js';
  * @returns {object}
  */
 function getErrorDetails(err, req) {
-    if (isProduction) return {};
     return {
-        stack: err.stack,
+        error: err.message,
         path: req.path,
         method: req.method,
         timestamp: new Date().toISOString(),
@@ -44,9 +42,22 @@ function logError(err, req, statusCode, errorCode, message) {
  * Central error handling middleware.
  */
 export function errorHandlerMiddleware(err, req, res, next) {
-    const statusCode = typeof err.statusCode === 'number' ? err.statusCode : 500;
-    const errorCode = typeof err.code === 'string' ? err.code : 'INTERNAL_SERVER_ERROR';
-    const message = typeof err.message === 'string' ? err.message : 'An unexpected error occurred';
+    const statusCode =
+        typeof err.statusCode === 'number'
+            ? err.statusCode
+            : err.status
+                ? err.status
+                : 500;
+    const errorCode =
+        typeof err.code === 'string'
+            ? err.code
+            : err.name
+                ? err.name
+                : 'INTERNAL_SERVER_ERROR';
+    const message =
+        typeof err.message === 'string'
+            ? err.message
+            : 'An unexpected error occurred';
 
     logError(err, req, statusCode, errorCode, message);
 
