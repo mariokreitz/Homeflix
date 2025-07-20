@@ -12,5 +12,16 @@ const LOG_LEVEL = process.env.LOG_LEVEL ?? 'info';
 const MORGAN_FORMAT = process.env.MORGAN_FORMAT ?? 'combined';
 const MORGAN_LOG_FILE = process.env.MORGAN_LOG_FILE ?? path.join('logs', 'access.log');
 const SESSION_SECRET = process.env.SESSION_SECRET ?? 'default';
+const CORS_ORIGIN = process.env.CORS_ORIGIN ?? 'http://localhost:4200';
 
-export { PORT, REDIS_URL, DATABASE_URL, LOG_LEVEL, MORGAN_FORMAT, MORGAN_LOG_FILE, SESSION_SECRET, isProduction };
+export {
+    PORT,
+    REDIS_URL,
+    DATABASE_URL,
+    LOG_LEVEL,
+    MORGAN_FORMAT,
+    MORGAN_LOG_FILE,
+    SESSION_SECRET,
+    isProduction,
+    CORS_ORIGIN,
+};
