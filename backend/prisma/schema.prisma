@@ -7,10 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Beispielmodell
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id                  Int       @id @default(autoincrement())
+  email               String    @unique
+  password            String
+  role                String    @default("USER")
+  isActive            Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  lastLoginAt         DateTime?
+  failedLoginAttempts Int       @default(0)
+  refreshTokenVersion Int       @default(0)
 }
