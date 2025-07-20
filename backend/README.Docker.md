@@ -1,22 +1,77 @@
-### Building and running your application
+# 🐳 Homeflix Docker Guide
 
-When you're ready, start your application by running:
-`docker compose up --build`.
+Welcome to the Docker setup for **Homeflix**! This guide walks you through building, running, and deploying Homeflix
+using Docker and Docker Compose, ensuring a smooth developer experience from local dev to cloud deployment.
 
-Your application will be available at http://localhost:5500.
+---
 
-### Deploying your application to the cloud
+## 🚀 Quick Start (Local Development)
 
-First, build your image, e.g.: `docker build -t myapp .`.
-If your cloud uses a different CPU architecture than your development
-machine (e.g., you are on a Mac M1 and your cloud provider is amd64),
-you'll want to build the image for that platform, e.g.:
-`docker build --platform=linux/amd64 -t myapp .`.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/mariokreitz/Homeflix.git
+   cd Homeflix/backend
+   ```
 
-Then, push it to your registry, e.g. `docker push myregistry.com/myapp`.
+2. **Start your application with Docker Compose**
+   ```bash
+   docker compose up --build
+   ```
+   Your API will be available at [http://localhost:5500](http://localhost:5500)
 
-Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
-docs for more detail on building and pushing.
+---
 
-### References
-* [Docker's Node.js guide](https://docs.docker.com/language/nodejs/)
+## 🌐 Cloud Deployment
+
+1. **Build the Docker image for your target platform**  
+   If your cloud uses a different CPU architecture (e.g., Mac M1 locally, AMD64 in cloud), specify the target:
+   ```bash
+   docker build --platform=linux/amd64 -t homeflix .
+   ```
+
+2. **Push the image to your registry**
+   ```bash
+   docker tag homeflix myregistry.com/homeflix
+   docker push myregistry.com/homeflix
+   ```
+
+3. **Deploy using your preferred cloud provider**
+    - Consult your provider's documentation for deploying Docker containers.
+
+---
+
+## 📝 References & Resources
+
+- [Docker's Node.js Guide](https://docs.docker.com/language/nodejs/)
+- [Docker Compose Docs](https://docs.docker.com/compose/)
+- [Docker Getting Started](https://docs.docker.com/go/get-started-sharing/)
+
+---
+
+## 💡 Tips
+
+- **Environment Variables**: Configure secrets & settings using `.env` files or Docker Compose environment sections.
+- **Logs & Debugging**: Use `docker compose logs` to stream logs from your containers.
+- **Scaling**: Add more services (database, cache, etc.) to your `docker-compose.yml` for a full stack experience.
+
+---
+
+## 📦 Example Docker Commands
+
+```bash
+# Stop containers
+docker compose down
+
+# View running containers
+docker ps
+
+# Attach to logs
+docker compose logs -f
+
+# Run migrations or scripts inside the container
+docker compose exec backend npm run migrate
+```
+
+---
+
+## 🏁 You're ready to deploy Homeflix anywhere Docker runs!
