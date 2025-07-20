@@ -5,8 +5,12 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
+    "seed": "node prisma/seed.js",
     "dev": "nodemon",
     "start": "node server.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",

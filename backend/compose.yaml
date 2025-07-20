@@ -33,15 +33,21 @@ services:
 
   db-init:
     image: node:20-alpine
-    working_dir: /app/backend
+    working_dir: /app
     volumes:
       - .:/app
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/homeflix
+      SEED_DEMO_PASSWORD: demo1234
+      SEED_ADMIN_PASSWORD: admin1234
     depends_on:
       db:
         condition: service_healthy
-    entrypoint: [ "npx", "prisma", "migrate", "reset", "--force", "--schema=../prisma/schema.prisma" ]
+    entrypoint: [
+      "sh",
+      "-c",
+      "npx prisma migrate reset --force --schema=./prisma/schema.prisma"
+    ]
     restart: "no"
 
   backend:
