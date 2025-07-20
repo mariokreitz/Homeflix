@@ -1,3 +1,10 @@
+# 🚧 Frontend Coming Soon! 🚧
+
+> **Homeflix will be a fullstack project. The official frontend is coming soon and will be built with Angular v20+! Stay
+tuned for the complete streaming platform experience.**
+
+---
+
 # 🎬 Homeflix
 
 > **A Next-Gen, Scalable Backend for Streaming & Media Platforms**
