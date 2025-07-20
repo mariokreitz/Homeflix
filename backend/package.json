@@ -5,8 +5,8 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node dist/server.js"
+    "dev": "nodemon",
+    "start": "node server.js"
   },
   "dependencies": {
     "@prisma/client": "^6.12.0",
