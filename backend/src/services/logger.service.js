@@ -6,7 +6,7 @@ const logsDir = path.resolve(process.cwd(), 'logs');
 
 const createFileLogger = (serviceName) => {
     if (typeof serviceName !== 'string' || !serviceName) {
-        throw new TypeError('serviceName muss ein nicht-leerer String sein');
+        throw new TypeError('serviceName must be a non-empty string');
     }
     return winston.createLogger({
         level: LOG_LEVEL,
@@ -20,7 +20,7 @@ const createFileLogger = (serviceName) => {
 
 const createConsoleLogger = (serviceName) => {
     if (typeof serviceName !== 'string' || !serviceName) {
-        throw new TypeError('serviceName muss ein nicht-leerer String sein');
+        throw new TypeError('serviceName must be a non-empty string');
     }
     return winston.createLogger({
         level: LOG_LEVEL,
