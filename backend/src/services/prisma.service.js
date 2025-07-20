@@ -1,10 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 import { dbLogger } from './logger.service.js';
 
-const prisma = new PrismaClient();
+const globalForPrisma = globalThis;
 
-prisma.$on('error', (e) => {
-    dbLogger.error('Prisma error', { error: e.message });
+if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = new PrismaClient({
+        errorFormat: 'pretty',
+        log: ['info'],
+    });
+}
+
+export const prisma = globalForPrisma.prisma;
+
+prisma.$on('warn', (e) => {
+    dbLogger.warn('Prisma warning', { warning: e.message });
+});
+prisma.$on('info', (e) => {
+    dbLogger.info('Prisma info', { info: e.message });
 });
 
 export async function connectPrisma() {

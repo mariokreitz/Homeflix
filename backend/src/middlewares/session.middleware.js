@@ -1,33 +1,69 @@
 import { RedisStore } from 'connect-redis';
-import { createClient } from 'redis';
-import { REDIS_URL } from '../config/env.config.js';
+import { getRedisClient, initRedisClient } from '../services/redis.service.js';
 import { dbLogger } from '../services/logger.service.js';
+import { SESSION_PREFIX } from '../config/env.config.js';
 
-let redisClient;
-let redisStore;
+let redisStore = null;
 let storeReady = false;
 
+/**
+ * Creates a new RedisStore instance for session management.
+ */
+async function createSessionStore() {
+    await initRedisClient();
+    const client = getRedisClient();
+
+    if (!client?.isReady) {
+        throw new Error('Redis client is not ready');
+    }
+
+    return new RedisStore({
+        client,
+        prefix: SESSION_PREFIX || 'homeflix:session:',
+        ttl: 86400,
+        disableTouch: false,
+    });
+}
+
+/**
+ * Initializes the session store with Redis.
+ */
 export async function initSessionStore() {
+    if (storeReady && redisStore) {
+        dbLogger.info('Session store already initialized');
+        return redisStore;
+    }
+
     try {
-        redisClient = createClient({ url: REDIS_URL });
-        await redisClient.connect();
-        dbLogger.info('Redis client connected successfully');
-        redisStore = new RedisStore({
-            client: redisClient,
-            prefix: 'homeflix:',
-        });
+        redisStore = await createSessionStore();
         storeReady = true;
+        dbLogger.info('RedisStore for session successfully initialized');
+        return redisStore;
     } catch (err) {
-        dbLogger.error('Redis connection/init error', { error: err?.message ?? err });
+        dbLogger.error('Failed to initialize RedisStore for sessions', {
+            error: err?.message ?? String(err),
+            stack: err?.stack,
+        });
         redisStore = null;
         storeReady = false;
+        return null;
     }
 }
 
+/**
+ * Returns the initialized session store.
+ */
 export function getSessionStore() {
     if (!storeReady || !redisStore) {
-        dbLogger.error('RedisStore is not initialized');
-        throw new Error('RedisStore is not initialized');
+        dbLogger.error('Attempting to use uninitialized RedisStore');
+        throw new Error('RedisStore is not initialized. Call initSessionStore() first.');
     }
     return redisStore;
+}
+
+/**
+ * Checks if the session store is ready.
+ */
+export function isSessionStoreReady() {
+    return storeReady && redisStore !== null;
 }
