@@ -2,7 +2,7 @@ import morgan from 'morgan';
 import { createWriteStream, existsSync, mkdirSync } from 'fs';
 import { MORGAN_FORMAT, MORGAN_LOG_FILE } from '../config/env.config.js';
 import path from 'path';
-import { httpLogger } from '../services/logger.service.js';
+import { serverLogger } from '../services/logger.service.js';
 
 const logDir = path.dirname(MORGAN_LOG_FILE);
 if (!existsSync(logDir)) {
@@ -14,7 +14,7 @@ try {
     stream = createWriteStream(MORGAN_LOG_FILE, { flags: 'a' });
 } catch (err) {
     stream = process.stdout;
-    httpLogger.error('Fehler beim Erstellen des Log-Streams', { error: err.message });
+    serverLogger.error('Fehler beim Erstellen des Log-Streams', { error: err.message });
 }
 
 const logFormat = MORGAN_FORMAT;
