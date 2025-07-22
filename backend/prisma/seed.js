@@ -8,10 +8,10 @@ dotenv.config();
 
 const prisma = new PrismaClient();
 
-const DEMO_PASSWORD = SEED_DEMO_USER;
-const ADMIN_PASSWORD = SEED_DEMO_PASSWORD;
+const DEMO_USER = SEED_DEMO_USER;
+const DEMO_PASSWORD = SEED_DEMO_PASSWORD;
 
-async function createUser(email, password, role) {
+async function createUser(email, password) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.upsert({
@@ -20,7 +20,6 @@ async function createUser(email, password, role) {
         create: {
             email,
             password: hashedPassword,
-            role,
             isActive: true,
             lastLoginAt: null,
             failedLoginAttempts: 0,
@@ -28,7 +27,7 @@ async function createUser(email, password, role) {
         },
     });
 
-    consoleLogger.info(`${role} user created: ${user.email}`);
+    consoleLogger.info(`DEMO user created: ${user.email}`);
     return user;
 }
 
@@ -36,11 +35,7 @@ async function main() {
     consoleLogger.info('Starting database seeding...');
 
     try {
-        await createUser('demo@homeflix.com', DEMO_PASSWORD, 'USER');
-
-        await createUser('admin@homeflix.com', ADMIN_PASSWORD, 'ADMIN');
-
-
+        await createUser(DEMO_USER, DEMO_PASSWORD);
         consoleLogger.info('Database seeding complete');
     } catch (error) {
         consoleLogger.error('Error during database seeding:', error);

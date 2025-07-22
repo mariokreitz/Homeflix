@@ -5,9 +5,23 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "seed": "node prisma/seed.js",
+    "start": "node server.js",
     "dev": "nodemon",
-    "start": "node server.js"
+    "seed": "node prisma/seed.js",
+    "docker:build": "docker compose build",
+    "docker:logs": "docker compose logs -f",
+    "docker:ps": "docker compose ps",
+    "db:start": "docker compose up -d db redis pgadmin",
+    "db:stop": "docker compose stop db redis pgadmin",
+    "db:init": "docker compose --profile init up db-init",
+    "db:reset": "npx prisma migrate reset --force",
+    "db:studio": "npx prisma studio",
+    "dev:docker": "docker compose up -d db redis pgadmin && npm run dev",
+    "dev:full": "docker compose up -d db redis pgadmin && npm run dev",
+    "prod:build": "docker compose --profile prod build",
+    "prod:up": "docker compose --profile prod up -d",
+    "prod:down": "docker compose --profile prod down",
+    "prod:logs": "docker compose --profile prod logs -f backend"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
