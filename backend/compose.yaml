@@ -59,7 +59,6 @@ services:
       args:
         DATABASE_URL: postgresql://postgres:postgres@db:5432/homeflix
         REDIS_URL: redis://redis:6379
-    profiles: [ "prod" ]
     container_name: homeflix-backend
     restart: unless-stopped
     env_file:
