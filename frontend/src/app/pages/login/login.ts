@@ -47,11 +47,9 @@ export class Login {
     }
 
     public onSubmit(): void {
-        console.log('Login form submitted:', this.loginForm.value);
         this.isLoading.set(true);
         this.auth.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
             next: (response: ApiSuccessResponse<LoginResponse, {}>) => {
-                console.log('Login response:', response);
                 if (response.success) {
                     void this.router.navigate([ '/dashboard' ]);
                 }
