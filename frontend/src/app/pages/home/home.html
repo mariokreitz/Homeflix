@@ -1,0 +1,77 @@
+<!-- Navigation Bar -->
+<nav class="flex items-center justify-between px-12 py-6">
+	<div class="flex items-center">
+		<img alt="Homeflix"
+				 class="h-8"
+				 height="32"
+				 ngSrc="/images/homeflix_logo.png" width="120">
+	</div>
+	<div>
+		<button class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded text-white font-medium transition-colors" routerLink="/login">Anmelden
+		</button>
+	</div>
+</nav>
+
+<!-- Hero Section -->
+<div class="relative">
+	<div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+	<div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-60 z-10"></div>
+	<img alt="Hero Banner"
+			 class="w-full h-[80vh] object-cover"
+			 onerror="this.src='https://via.placeholder.com/1920x1080/333333/FFFFFF?text=Featured+Content'; this.onerror=null;"
+			 src="assets/images/hero-banner.jpg">
+
+	<div class="absolute inset-0 flex flex-col justify-center px-12 z-20">
+		<h1 class="text-5xl font-bold mb-4 max-w-2xl">Unbegrenzte Filme, Serien und mehr.</h1>
+		<p class="text-2xl mb-8 max-w-xl">Genießen Sie Ihre Lieblingsmedien überall. Jederzeit kündbar.</p>
+		<div class="flex flex-col sm:flex-row gap-4 max-w-lg">
+			<button class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded text-xl font-medium transition-colors" routerLink="/register">
+				Jetzt starten
+			</button>
+			<button class="bg-gray-800 hover:bg-gray-700 px-8 py-4 rounded text-xl font-medium transition-colors flex items-center justify-center gap-2"
+							routerLink="/learn-more">
+				<span class="material-icons">info_outline</span>
+				Mehr erfahren
+			</button>
+		</div>
+	</div>
+</div>
+
+<!-- Content Preview Section -->
+<div class="px-12 py-16">
+	<h2 class="text-3xl font-bold mb-8">Beliebte Inhalte</h2>
+	<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+		@for (i of [ 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12 ]; track i) {
+			<div class="rounded overflow-hidden hover:scale-105 transition-transform cursor-pointer">
+				<img [src]="'https://via.placeholder.com/300x450/222222/FFFFFF?text=Movie+' + i" alt="Movie Preview" class="w-full h-auto">
+			</div>
+		}
+	</div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-black py-16 text-gray-500 border-t border-gray-800">
+	<div class="max-w-6xl mx-auto px-8">
+		<p class="mb-6">Fragen? Kontaktieren Sie uns.</p>
+		<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+			<ul class="space-y-3">
+				<li><a class="hover:underline" href="#">FAQ</a></li>
+				<li><a class="hover:underline" href="#">Datenschutz</a></li>
+			</ul>
+			<ul class="space-y-3">
+				<li><a class="hover:underline" href="#">Hilfe-Center</a></li>
+				<li><a class="hover:underline" href="#">Cookie-Einstellungen</a></li>
+			</ul>
+			<ul class="space-y-3">
+				<li><a class="hover:underline" href="#">Nutzungsbedingungen</a></li>
+				<li><a class="hover:underline" href="#">Rechtliche Hinweise</a></li>
+			</ul>
+			<ul class="space-y-3">
+				<li><a class="hover:underline" href="#">Medien-Center</a></li>
+				<li><a class="hover:underline" href="#">Kontakt</a></li>
+			</ul>
+		</div>
+		<p class="mt-12">&copy; 2023 Homeflix</p>
+	</div>
+</footer>
+
