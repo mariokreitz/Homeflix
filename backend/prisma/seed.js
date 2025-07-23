@@ -23,7 +23,6 @@ async function createUser(email, password) {
             isActive: true,
             lastLoginAt: null,
             failedLoginAttempts: 0,
-            refreshTokenVersion: 0,
         },
     });
 

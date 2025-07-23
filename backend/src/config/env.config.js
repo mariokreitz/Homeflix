@@ -43,8 +43,8 @@ export const MAX_LOG_FILE_SIZE = process.env.MAX_LOG_FILE_SIZE || '10m';
 export const MAX_LOG_FILES = parseInt(process.env.MAX_LOG_FILES || '5', 10);
 
 // Seed / Demo User Configuration
-export const SEED_DEMO_USER = process.env.SEED_DEMO_USER || 'demo_user';
-export const SEED_DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD || 'demo_password';
+export const SEED_DEMO_USER = process.env.SEED_DEMO_USER || 'user@example.com';
+export const SEED_DEMO_PASSWORD = process.env.SEED_DEMO_PASSWORD || 'password123';
 
 // Validate critical environment variables in production mode
 if (isProduction) {
