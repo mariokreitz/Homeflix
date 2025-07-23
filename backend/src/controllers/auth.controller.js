@@ -179,3 +179,24 @@ export async function registerController(req, res, next) {
         next(err);
     }
 }
+
+export async function verifySessionController(req, res, next) {
+    try {
+        if (!req.user) {
+            return next(createHttpError('UNAUTHORIZED', 'User not authenticated', 401));
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                sessionId: req.user.sessionId,
+                user: {
+                    id: req.user.id,
+                },
+            },
+            meta: {},
+        });
+    } catch (err) {
+        next(err);
+    }
+}
