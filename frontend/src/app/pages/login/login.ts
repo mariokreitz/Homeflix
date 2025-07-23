@@ -1,7 +1,8 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { Footer } from '../../core/components/footer/footer';
 import { Auth } from '../../core/services/auth';
 import { ApiErrorResponse, ApiSuccessResponse } from '../../shared/models/api_response';
 import { ErrorResponse, LoginResponse } from '../../shared/models/auth';
@@ -15,7 +16,7 @@ import { ErrorResponse, LoginResponse } from '../../shared/models/auth';
         ReactiveFormsModule,
         FormsModule,
         RouterLink,
-        NgOptimizedImage,
+        Footer,
     ],
 })
 export class Login {
@@ -25,7 +26,7 @@ export class Login {
 
     private readonly fb: FormBuilder = inject(FormBuilder);
     private readonly router: Router = inject(Router);
-    private readonly auth: Auth = inject(Auth);
+    private readonly authService: Auth = inject(Auth);
 
     constructor() {
         this.loginForm = this.fb.group({
@@ -48,7 +49,7 @@ export class Login {
 
     public onSubmit(): void {
         this.isLoading.set(true);
-        this.auth.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
+        this.authService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
             next: (response: ApiSuccessResponse<LoginResponse, {}>) => {
                 if (response.success) {
                     void this.router.navigate([ '/dashboard' ]);
@@ -56,7 +57,6 @@ export class Login {
             },
             error: (err: ApiErrorResponse<ErrorResponse<{}>>) => {
                 console.error('err response:', err);
-
                 this.error.set(err.error.message);
             },
             complete: () => {

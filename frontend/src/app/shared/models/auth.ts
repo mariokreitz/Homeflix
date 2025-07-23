@@ -6,6 +6,19 @@ export interface LoginResponse {
     user: Pick<UserInterface, 'id' | 'email'>;
 }
 
+export interface SessionResponse {
+    sessionId: string;
+    user: Pick<UserInterface, 'id'>;
+}
+
+export interface CsrfTokenResponse {
+    csrfToken: string;
+}
+
+export interface CsrfTokenMetaResponse {
+    sessionId: string;
+}
+
 export interface ErrorResponse<DetailsType extends Object> {
     success: boolean;
     error: Error<DetailsType>;

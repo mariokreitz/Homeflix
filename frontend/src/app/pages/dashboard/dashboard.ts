@@ -8,10 +8,10 @@ import { Auth } from '../../core/services/auth';
     styleUrl: './dashboard.css',
 })
 export class Dashboard {
-    private readonly auth: Auth = inject(Auth);
+    private readonly authService: Auth = inject(Auth);
 
     public onLogout() {
-        this.auth.logout().subscribe({
+        this.authService.logout().subscribe({
             next: () => {
                 // Handle successful logout
                 console.log('Logout successful');

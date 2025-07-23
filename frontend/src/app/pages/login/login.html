@@ -1,25 +1,12 @@
 <div class="min-h-screen bg-black flex flex-col">
-	<!-- Navigation Bar -->
-	<nav class="flex items-center justify-between px-12 py-6">
-		<div class="flex items-center">
-			<img alt="Homeflix"
-					 class="h-8"
-					 height="32"
-					 ngSrc="/images/homeflix_logo.png" width="120">
-		</div>
-	</nav>
-
-	<!-- Login Form -->
 	<div class="flex-grow flex items-center justify-center px-4">
 		<div class="bg-black/80 p-16 rounded-md max-w-md w-full border border-gray-800">
 			<h1 class="text-3xl font-bold text-white mb-8">Anmelden</h1>
-
 			@if (error()) {
 				<div class="bg-red-600/20 text-red-500 p-4 mb-6 rounded">
 					{{ error() }}
 				</div>
 			}
-
 			<form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="space-y-6">
 				<div>
 					<input
@@ -75,12 +62,4 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- Footer -->
-	<footer class="py-6 text-gray-500 text-sm border-t border-gray-800">
-		<div class="max-w-6xl mx-auto px-8">
-			<p>&copy; 2023 Homeflix</p>
-		</div>
-	</footer>
 </div>
-
