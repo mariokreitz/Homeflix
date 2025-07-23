@@ -11,4 +11,8 @@ export class User {
     public setUser(user: UserInterface): void {
         this._user.set(user);
     }
+
+    public clearUser(): void {
+        this._user.set(null);
+    }
 }

@@ -3,8 +3,8 @@ import { inject } from '@angular/core';
 import { Auth } from '../services/auth';
 
 export const csrfInterceptor: HttpInterceptorFn = (request, next) => {
-    const auth = inject(Auth);
-    const csrfToken = auth.csrfToken();
+    const authService = inject(Auth);
+    const csrfToken = authService.csrfToken();
 
     let req = request.clone({
         withCredentials: true,
