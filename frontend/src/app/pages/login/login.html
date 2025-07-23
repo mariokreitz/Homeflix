@@ -1,0 +1,86 @@
+<div class="min-h-screen bg-black flex flex-col">
+	<!-- Navigation Bar -->
+	<nav class="flex items-center justify-between px-12 py-6">
+		<div class="flex items-center">
+			<img alt="Homeflix"
+					 class="h-8"
+					 height="32"
+					 ngSrc="/images/homeflix_logo.png" width="120">
+		</div>
+	</nav>
+
+	<!-- Login Form -->
+	<div class="flex-grow flex items-center justify-center px-4">
+		<div class="bg-black/80 p-16 rounded-md max-w-md w-full border border-gray-800">
+			<h1 class="text-3xl font-bold text-white mb-8">Anmelden</h1>
+
+			@if (error()) {
+				<div class="bg-red-600/20 text-red-500 p-4 mb-6 rounded">
+					{{ error() }}
+				</div>
+			}
+
+			<form (ngSubmit)="onSubmit()" [formGroup]="loginForm" class="space-y-6">
+				<div>
+					<input
+								class="w-full bg-gray-800 text-white p-4 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+								formControlName="email"
+								placeholder="E-Mail oder Telefonnummer"
+								type="email"
+					>
+					@if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+						<p class="text-red-500 text-sm mt-1">Bitte geben Sie eine gültige E-Mail-Adresse ein.</p>
+					}
+				</div>
+
+				<div>
+					<input
+								class="w-full bg-gray-800 text-white p-4 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+								formControlName="password"
+								placeholder="Passwort"
+								type="password"
+					>
+					@if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+						<p class="text-red-500 text-sm mt-1">Das Passwort muss mindestens 6 Zeichen lang sein.</p>
+					}
+				</div>
+
+				<button
+							[disabled]="loginForm.invalid || isLoading()"
+							class="w-full bg-red-600 hover:bg-red-700 text-white p-4 rounded font-medium transition-colors disabled:opacity-70 cursor-pointer"
+							type="submit"
+				>
+					@if (isLoading()) {
+						<span>Wird angemeldet...</span>
+					} @else {
+						<span>Anmelden</span>
+					}
+				</button>
+			</form>
+
+			<div class="mt-8 flex justify-between text-gray-400 text-sm">
+				<div class="flex items-center">
+					<input class="mr-1 bg-gray-800 border-gray-600" id="remember" type="checkbox">
+					<label for="remember">Angemeldet bleiben</label>
+				</div>
+				<a class="hover:underline" href="#">Brauchen Sie Hilfe?</a>
+			</div>
+
+			<div class="mt-16 text-gray-400">
+				<p>Neu bei Homeflix? <a class="text-white hover:underline" routerLink="/register">Jetzt registrieren</a></p>
+				<p class="mt-4 text-xs">
+					<a class="hover:underline text-blue-500" href="#">Datenschutzbestimmungen</a> und
+					<a class="hover:underline text-blue-500" href="#">Nutzungsbedingungen</a>.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer class="py-6 text-gray-500 text-sm border-t border-gray-800">
+		<div class="max-w-6xl mx-auto px-8">
+			<p>&copy; 2023 Homeflix</p>
+		</div>
+	</footer>
+</div>
+
