@@ -11,6 +11,7 @@ import { setupSwagger } from './config/swagger.config.js';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.middleware.js';
 import authRouter from './routes/auth.routes.js';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -34,19 +35,6 @@ function setupSecurity(app) {
         credentials: true,
         optionsSuccessStatus: 204,
     }));
-    app.use((req, res, next) => {
-        if (isProduction && req.headers['x-forwarded-proto'] !== 'https') {
-            return res.status(403).json({
-                success: false,
-                error: {
-                    code: 'HTTPS_REQUIRED',
-                    message: 'HTTPS connection required',
-                    details: {},
-                },
-            });
-        }
-        next();
-    });
 }
 
 /**
@@ -65,6 +53,7 @@ function setupLogging(app) {
 function setupParsers(app) {
     app.use(express.json({ limit: '1mb' }));
     app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+    app.use(cookieParser());
 }
 
 /**

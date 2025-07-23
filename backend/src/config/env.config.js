@@ -15,7 +15,7 @@ export const BASE_URL = process.env.BASE_URL || `http://${HOST}:${PORT}`;
 // CORS settings
 export const CORS_ORIGIN = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',')
-    : ['http://localhost:4200'];
+    : ['http://localhost:4200', 'http://localhost:5500'];
 
 // Redis configuration
 export const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
