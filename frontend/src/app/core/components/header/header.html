@@ -1,11 +1,51 @@
 <nav class="flex items-center justify-between px-12 py-6 max-w-[1920px] mx-auto">
 	<div class="flex items-center">
 		<img alt="Homeflix"
+				 class="cursor-pointer"
 				 height="32"
-				 ngSrc="/images/homeflix_logo.png" width="120">
+				 ngSrc="/images/homeflix_logo.png"
+				 priority
+				 routerLink="/" width="120">
 	</div>
 	<div>
-		<button class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded text-white font-medium transition-colors" routerLink="/login">Anmelden
-		</button>
+		@if (showLoginButton()) {
+			<button class="bg-red-600 cursor-pointer hover:bg-red-700 px-6 py-2 rounded text-white font-medium transition-colors"
+							routerLink="/login">Anmelden
+			</button>
+		}
+		@if (isAuthenticated()) {
+			<div class="flex items-center space-x-4">
+				<div class="relative group">
+					<button class="flex items-center space-x-2 focus:outline-none">
+						<div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">
+							{{ profileInitial() }}
+						</div>
+					</button>
+
+					<!-- Dropdown-Menü -->
+					<div class="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded shadow-lg hidden group-hover:block">
+						<div class="p-2">
+							<div class="px-4 py-2 text-sm text-gray-300">
+								{{ userName() }}
+							</div>
+							<div class="border-t border-gray-700 my-1"></div>
+							<button routerLink="/dashboard"
+											class="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-800">
+								Dashboard
+							</button>
+							<button routerLink="/profile"
+											class="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-800">
+								Profil
+							</button>
+							<div class="border-t border-gray-700 my-1"></div>
+							<button (click)="onLogout()"
+											class="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-800">
+								Abmelden
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 	</div>
 </nav>

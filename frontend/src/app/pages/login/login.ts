@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { Footer } from '../../core/components/footer/footer';
 import { Auth } from '../../core/services/auth';
 import { ApiErrorResponse, ApiSuccessResponse } from '../../shared/models/api_response';
 import { ErrorResponse, LoginResponse } from '../../shared/models/auth';
@@ -16,7 +15,6 @@ import { ErrorResponse, LoginResponse } from '../../shared/models/auth';
         ReactiveFormsModule,
         FormsModule,
         RouterLink,
-        Footer,
     ],
 })
 export class Login {
