@@ -189,7 +189,7 @@ For detailed Docker instructions, see [`backend/README.Docker.md`](backend/READM
 ### Frontend
 
 - **Angular**: UI framework
-- **Material Design**: Component library
+- **TailwindCSS**: Responsive styling, utility-first CSS framework
 - **Nginx**: Web server
 
 ### Infrastructure
