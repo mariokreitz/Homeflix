@@ -6,16 +6,16 @@
 
 **/.classpath
 **/.dockerignore
-**/.env
+.env
 **/.git
-**/.gitignore
+../backend/.idea/.gitignore
 **/.project
 **/.settings
 **/.toolstarget
 **/.vs
 **/.vscode
 **/.next
-**/.cache
+backend/node_modules/.cache
 **/*.*proj.user
 **/*.dbmdl
 **/*.jfm

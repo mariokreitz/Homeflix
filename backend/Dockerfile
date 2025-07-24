@@ -5,6 +5,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 
+# Create logs directory with correct permissions
+RUN mkdir -p /app/logs && chmod 777 /app/logs
+
 COPY . .
 
 ARG DATABASE_URL

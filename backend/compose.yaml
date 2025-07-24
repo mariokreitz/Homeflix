@@ -12,10 +12,11 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres && echo 'Database is ready'" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 10s
 
   redis:
     image: redis:7-alpine
@@ -25,11 +26,13 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    command: redis-server --appendonly yes
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 5s
 
   db-init:
     image: node:20-alpine
@@ -46,7 +49,7 @@ services:
     entrypoint: [
       "sh",
       "-c",
-      "echo 'Initialisiere Datenbank...' && npx prisma migrate reset --force --schema=./prisma/schema.prisma && echo 'Datenbank wurde erfolgreich initialisiert!'"
+      "echo 'Initializing database...' && npx prisma migrate reset --force --schema=./prisma/schema.prisma && echo 'Database successfully initialized!'"
     ]
     restart: "no"
 
@@ -73,12 +76,32 @@ services:
     ports:
       - "5500:5500"
     volumes:
+      - ./src:/app/src:ro
+      - ./prisma:/app/prisma:ro
+      - ./public:/app/public:ro
       - ./logs:/app/logs
+      - ./package.json:/app/package.json:ro
+      - ./package-lock.json:/app/package-lock.json:ro
+      - ./server.js:/app/server.js:ro
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:5500/ && echo 'Backend ist bereit'" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:5500/api/v1/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: homeflix-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles: [ "frontend", "full" ]
 
   pgadmin:
     image: dpage/pgadmin4
@@ -86,13 +109,19 @@ services:
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: test@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: pasword123test
+      PGADMIN_DEFAULT_PASSWORD: password123test
     ports:
       - "5050:80"
     depends_on:
       db:
         condition: service_healthy
+    profiles: [ "dev", "tools" ]
 
 volumes:
   db_data:
   redis_data:
+
+networks:
+  default:
+    name: homeflix-network
+    driver: bridge
