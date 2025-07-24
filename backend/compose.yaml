@@ -84,7 +84,7 @@ services:
       - ./package-lock.json:/app/package-lock.json:ro
       - ./server.js:/app/server.js:ro
     healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:5500/api/v1/health" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:5500/" ]
       interval: 30s
       timeout: 10s
       retries: 5
