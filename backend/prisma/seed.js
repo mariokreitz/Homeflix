@@ -35,7 +35,7 @@ async function main() {
 
     try {
         await createUser(DEMO_USER, DEMO_PASSWORD);
-        consoleLogger.info('Database seeding complete');
+        consoleLogger.info(`user ${DEMO_USER} seeded successfully with password ${DEMO_PASSWORD}`);
     } catch (error) {
         consoleLogger.error('Error during database seeding:', error);
         throw error;
