@@ -11,6 +11,10 @@ export interface SessionResponse {
     user: Pick<UserInterface, 'id'>;
 }
 
+export interface LogoutResponse {
+    message: string;
+}
+
 export interface CsrfTokenResponse {
     csrfToken: string;
 }
@@ -19,12 +23,12 @@ export interface CsrfTokenMetaResponse {
     sessionId: string;
 }
 
-export interface ErrorResponse<DetailsType extends Object> {
+export interface ErrorResponse<DetailsType extends Object = {}> {
     success: boolean;
     error: Error<DetailsType>;
 }
 
-interface Error<DetailsType extends Object = {}> {
+interface Error<DetailsType extends Object> {
     code: string;
     message: string;
     details: DetailsType;

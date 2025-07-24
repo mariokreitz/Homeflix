@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, Observable, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiSuccessResponse } from '../../shared/models/api_response';
-import { CsrfTokenMetaResponse, CsrfTokenResponse, LoginResponse, SessionResponse } from '../../shared/models/auth';
+import { CsrfTokenMetaResponse, CsrfTokenResponse, LoginResponse, LogoutResponse, SessionResponse } from '../../shared/models/auth';
 import { UserInterface } from '../../shared/models/user';
 import { User } from './user';
 
@@ -51,8 +51,8 @@ export class Auth {
         );
     }
 
-    public logout(): Observable<ApiSuccessResponse<{ message: string }, {}>> {
-        return this.http.post<ApiSuccessResponse<{ message: string }, {}>>(`${this._apiUrl}/auth/logout`, {}).pipe(
+    public logout(): Observable<ApiSuccessResponse<LogoutResponse, {}>> {
+        return this.http.post<ApiSuccessResponse<LogoutResponse, {}>>(`${this._apiUrl}/auth/logout`, {}).pipe(
           tap(() => {
               this._isAuthenticated.set(false);
               this._csrfToken.set(null);
