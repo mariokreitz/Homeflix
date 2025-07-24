@@ -39,8 +39,6 @@ services:
       - .:/app
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/homeflix
-      SEED_DEMO_PASSWORD: demo1234
-      SEED_ADMIN_PASSWORD: admin1234
       NODE_ENV: development
     depends_on:
       db:
