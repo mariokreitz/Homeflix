@@ -8,85 +8,160 @@ tuned for the complete streaming platform experience.**
 
 # 🎬 Homeflix
 
-> **A Next-Gen, Scalable Backend for Streaming & Media Platforms**
+> **A Full-Stack Media Streaming Platform with Angular Frontend and Express Backend**
 
-Homeflix is a cutting-edge Node.js backend built for modern streaming and media management applications. With advanced
-security, scalable session management, OpenAPI docs, and seamless Docker deployment, it's designed for developers who
-want robust, production-ready foundations with zero fuss.
+Homeflix is a cutting-edge media streaming platform built with modern web technologies. Featuring a robust Node.js
+backend and Angular frontend, it offers advanced security, scalable session management, interactive API documentation,
+and seamless Docker deployment for developers who want a production-ready foundation with zero fuss.
 
 ---
 
 ## 🚀 Features at a Glance
 
-- **Express.js REST API** — Fast, modular endpoints ready for any media workflow
+### Backend
+
+- **Express.js REST API** — Fast, modular endpoints for media workflows
 - **Modern Auth** — JWT & refresh tokens, CSRF protection, secure cookies
 - **Redis Sessions** — Scalable, persistent session storage with Redis
 - **Rate Limiting** — Prevent API abuse out-of-the-box
 - **Swagger/OpenAPI** — Interactive API docs and schema validation
-- **Centralized Error Handling** — Consistent, developer-friendly error responses
-- **Health Checks** — Built-in uptime and status endpoint
-- **Detailed Logging** — Request, server, and DB activity logs
-- **Graceful Shutdown** — Ensures clean disconnect and resource management
-- **Docker-First** — Effortless local dev, CI/CD, and cloud deployment
+- **Prisma ORM** — Type-safe database access with PostgreSQL
+- **Docker Integration** — Multiple profiles for different deployment scenarios
+
+### Frontend
+
+- **Angular v20+** — Modern, component-based UI architecture
+- **TailwindCSS** — Sleek, responsive user interface
+- **Docker Integration** — Containerized deployment with Nginx
+- **API Integration** — Seamless connection to backend services
+
+### DevOps
+
+- **Docker Compose** — Multi-container orchestration for local and production
+- **Service Profiles** — Customizable deployment configurations
+- **Health Checks** — Automated service monitoring
+- **Centralized Logging** — Comprehensive activity tracking
+
+---
+
+## 🏗️ Architecture
+
+Homeflix follows a modern microservices architecture:
+
+- **Frontend**: Angular application served via Nginx
+- **Backend**: Express.js API with modular controllers and services
+- **Database**: PostgreSQL with Prisma ORM
+- **Cache & Sessions**: Redis for performance and scalability
+- **Development Tools**: PGAdmin for database management
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-backend/
-├── src/
-│   ├── app.js                # Express app & middleware setup
-│   ├── controllers/          # API controllers (authentication, etc.)
-│   ├── middlewares/          # Session, auth, error handler, rate limiters
-│   ├── routes/               # Route definitions
-│   ├── services/             # Redis, Prisma, token, logging
-│   ├── config/               # Environment setup, Swagger config
-│   └── ...
-├── server.js                 # Entrypoint & graceful shutdown logic
-├── README.Docker.md          # Docker deployment instructions
-└── ...
+homeflix/
+├── backend/
+│   ├── src/
+│   │   ├── app.js            # Express app & middleware setup
+│   │   ├── controllers/      # API controllers (authentication, etc.)
+│   │   ├── middlewares/      # Session, auth, error handler, rate limiters
+│   │   ├── routes/           # Route definitions
+│   │   ├── services/         # Redis, Prisma, token, logging
+│   │   └── config/           # Environment setup, Swagger config
+│   ├── prisma/               # Database schema and migrations
+│   ├── server.js             # Entrypoint & graceful shutdown logic
+│   └── README.Docker.md      # Backend Docker instructions
+│
+├── frontend/
+│   ├── src/                  # Angular application source
+│   ├── Dockerfile            # Frontend container configuration
+│   └── nginx.conf            # Nginx web server configuration
+│
+└── compose.yaml              # Docker Compose configuration
 ```
 
 ---
 
 ## 🛠️ Quickstart
 
-### Local Development
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
+- [Node.js](https://nodejs.org/) (for local development)
+- [Git](https://git-scm.com/)
+
+### Full-Stack Docker Deployment
 
 ```bash
-# Install dependencies
+# Clone the repository
+git clone https://github.com/mariokreitz/Homeflix.git
+cd Homeflix/backend
+
+# Start the full stack (backend, frontend, database, redis)
+npm run full:up
+
+# Access the application at:
+# Frontend: http://localhost:4200
+# API: http://localhost:5500
+# API Docs: http://localhost:5500/api-docs
+```
+
+### Local Backend Development
+
+```bash
+# Start database and Redis services
+npm run db:start
+
+# Install backend dependencies
+cd backend
 npm install
 
-# Start development server
+# Run backend in development mode
 npm run dev
 
-# Access API at:
-http://localhost:5500
+# Access API at http://localhost:5500
 ```
 
-### Docker Deployment
-
-See [`backend/README.Docker.md`](backend/README.Docker.md) for complete Docker instructions.
+### Development Tools
 
 ```bash
-# Build and run with Docker Compose
-docker compose up --build
+# Start PGAdmin for database management
+npm run tools:up
 
-# Build for target architecture (cloud, CI/CD)
-docker build --platform=linux/amd64 -t homeflix .
-docker push yourregistry.com/homeflix
+# Access PGAdmin at http://localhost:5050
+# (Email: test@gmail.com, Password: password123test)
+
+# Start Prisma Studio (alternative DB interface)
+npm run db:studio
+
+# Access Prisma Studio at http://localhost:5555
 ```
+
+---
+
+## 🐳 Docker Profiles
+
+Homeflix uses Docker Compose profiles for flexible deployment options:
+
+| Profile    | Description                                         |
+|------------|-----------------------------------------------------|
+| `default`  | Backend API, PostgreSQL, and Redis                  |
+| `frontend` | Angular frontend application                        |
+| `full`     | Complete stack (backend, frontend, database, redis) |
+| `dev`      | Development tools (PGAdmin)                         |
+| `tools`    | Database management tools                           |
+| `init`     | Database initialization service                     |
+| `prod`     | Production-optimized services                       |
+
+For detailed Docker instructions, see [`backend/README.Docker.md`](backend/README.Docker.md).
 
 ---
 
 ## 📡 API Overview
 
 - **Auth endpoints:** `/api/v1/auth`
-- **Health check:** `/` (returns uptime, status)
-- **Future:** Extend with `/api/v1/media` and more
-
-Docs auto-generated via Swagger/OpenAPI.
+- **Health check:** `/api/v1/health`
+- **API Documentation:** `/api-docs`
 
 ---
 
@@ -95,25 +170,33 @@ Docs auto-generated via Swagger/OpenAPI.
 - **Helmet**: Secure HTTP headers
 - **CORS**: Configurable trusted origins
 - **Secure Cookies**: HttpOnly, SameSite strict, secure flag
-- **Rate Limiting**: Configurable to fit your needs
+- **Rate Limiting**: Redis-backed request throttling
+- **Input Validation**: Request schema validation with Joi
+- **Token Management**: Secure refresh/access token rotation
 
 ---
 
 ## ⚙️ Tech Stack
 
-- Node.js (Express)
-- Redis (Session store)
-- Prisma (ORM/database)
-- JWT (auth)
-- Docker (containerization)
-- Swagger (API docs)
+### Backend
 
----
+- **Node.js & Express**: API framework
+- **PostgreSQL & Prisma**: Database and ORM
+- **Redis**: Session store and caching
+- **JWT**: Authentication tokens
+- **Swagger**: API documentation
 
-## 📚 References & Resources
+### Frontend
 
-- [Docker’s Node.js guide](https://docs.docker.com/language/nodejs/)
-- [Docker Getting Started](https://docs.docker.com/go/get-started-sharing/)
+- **Angular**: UI framework
+- **Material Design**: Component library
+- **Nginx**: Web server
+
+### Infrastructure
+
+- **Docker & Docker Compose**: Containerization
+- **Health Checks**: Service monitoring
+- **Winston & Morgan**: Logging
 
 ---
 
@@ -130,12 +213,5 @@ GitHub: [@mariokreitz](https://github.com/mariokreitz)
 
 ---
 
-## 💡 Inspiration
-
-Homeflix is built for developers who want a modern, secure, and extensible backend with all the essentials for building
-the next streaming hit or media management platform.
-
----
-
-**Ready to binge-code?**  
-Clone, run, and start building your own Homeflix experience!
+**Ready to stream your code?**  
+Clone, deploy, and start building your own Homeflix experience!
