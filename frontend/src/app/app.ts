@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Footer } from './core/components/footer/footer';
 import { Header } from './core/components/header/header';
@@ -33,16 +33,14 @@ export class App {
         '/privacy',
     ];
 
-    shouldShowFooter(): boolean {
-        // Wenn der Benutzer eingeloggt ist, zeige keinen Footer an
+    shouldShowFooter = computed(() => {
         if (this.authService.isAuthenticated()) {
             return false;
         }
 
-        // Prüfe, ob die aktuelle Route eine öffentliche Route ist
         const currentRoute = this.router.url;
         return this.publicRoutes.some(route =>
           currentRoute === route || currentRoute.startsWith(route + '?'),
         );
-    }
+    });
 }
