@@ -3,6 +3,7 @@
 > **Homeflix will be a fullstack project. The official frontend is coming soon and will be built with Angular v20+! Stay
 tuned for the complete streaming platform experience.**
 
+![screenshot](https://raw.githubusercontent.com/mariokreitz/Homeflix/refs/heads/main/homeflix_cover.png)
 ---
 
 # 🎬 Homeflix
