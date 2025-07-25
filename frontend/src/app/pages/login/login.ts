@@ -56,6 +56,7 @@ export class Login {
 
         this.isLoading.set(true);
 
+        //TODO remember me functionality 
         this.authService.login(email.trim(), password).subscribe({
             next: (response: ApiSuccessResponse<LoginResponse, {}>) => {
                 try {
