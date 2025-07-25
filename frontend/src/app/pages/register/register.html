@@ -1,0 +1,54 @@
+<div class="min-h-screen bg-black flex flex-col">
+	<div class="flex-grow flex items-center justify-center px-4">
+		<div class="bg-black/80 p-16 rounded-md max-w-md w-full border border-gray-800">
+			<h1 class="text-3xl font-bold text-white mb-8">Registrieren</h1>
+			<app-auth-form
+						(submit)="onSubmit()"
+						[error]="error()"
+						[form]="registerForm"
+						[isLoading]="isLoading()"
+						[loadingText]="'Wird registriert...'"
+						[submitText]="'Registrieren'"
+						[success]="success()"
+			>
+
+				<app-form-field
+							[form]="registerForm"
+							autocomplete="email"
+							controlName="email"
+							label="E-Mail"
+							placeholder="E-Mail"
+							type="email"
+				></app-form-field>
+
+				<app-form-field
+							[form]="registerForm"
+							autocomplete="new-password"
+							controlName="password"
+							label="Passwort"
+							placeholder="Passwort"
+							type="password"
+				></app-form-field>
+
+				<app-form-field
+							[form]="registerForm"
+							autocomplete="new-password"
+							controlName="confirmPassword"
+							label="Passwort bestätigen"
+							placeholder="Passwort bestätigen"
+							type="password"
+				></app-form-field>
+			</app-auth-form>
+			<div class="mt-8 flex justify-between text-gray-400 text-sm">
+				<a class="hover:underline" href="#">Brauchen Sie Hilfe?</a>
+			</div>
+			<div class="mt-16 text-gray-400">
+				<p>Bereits ein Konto? <a class="text-white hover:underline" routerLink="/login">Jetzt anmelden</a></p>
+				<p class="mt-4 text-xs">
+					<a class="hover:underline text-blue-500" href="#">Datenschutzbestimmungen</a> und
+					<a class="hover:underline text-blue-500" href="#">Nutzungsbedingungen</a>.
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
