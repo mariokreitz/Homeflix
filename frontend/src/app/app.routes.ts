@@ -14,6 +14,11 @@ export const routes: Routes = [
         canActivate: [ noAuthGuard ],
     },
     {
+        path: 'register',
+        loadComponent: () => import('./pages/register/register').then(m => m.Register),
+        canActivate: [ noAuthGuard ],
+    },
+    {
         path: 'dashboard',
         loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
         canActivate: [ authGuard ],

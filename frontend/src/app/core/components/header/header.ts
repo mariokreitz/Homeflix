@@ -18,10 +18,6 @@ import { User } from '../../services/user';
     standalone: true,
 })
 export class Header {
-    public readonly userName = computed((): string => {
-        const user = this.user();
-        return user?.email ?? 'Benutzer';
-    });
     public readonly profileInitial = computed((): string => {
         const name = this.userName();
         return name?.charAt(0)?.toUpperCase() ?? 'B';
@@ -30,9 +26,13 @@ export class Header {
     public readonly isAuthenticated = computed((): boolean => this.authService.isAuthenticated());
     private readonly userService = inject(User);
     public readonly user = computed((): UserInterface | null => this.userService.user());
+    public readonly userName = computed((): string => {
+        const user = this.user();
+        return user?.email ?? 'Benutzer';
+    });
     private readonly router = inject(Router);
     public readonly showLoginButton = computed((): boolean =>
-      !this.isAuthenticated() && (this.router.url !== '/login'),
+      !this.isAuthenticated() && (this.router.url !== '/login' && this.router.url !== '/register'),
     );
 
     public onLogout(): void {

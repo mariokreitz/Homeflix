@@ -5,4 +5,5 @@ export interface UserInterface {
     createdAt: Date;
     updatedAt: Date;
     lastLoginAt: Date;
+    failedLoginAttempts: number;
 }

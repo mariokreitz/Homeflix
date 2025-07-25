@@ -1,5 +1,9 @@
 import { UserInterface } from './user';
 
+export interface RegisterResponse {
+    user: UserInterface;
+}
+
 export interface LoginResponse {
     csrfToken: string;
     sessionId: string;
