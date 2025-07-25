@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import { prisma } from '../services/prisma.service.js';
 import passport from '../services/passport.service.js';
 
-function setAuthCookies(res, tokens) {
+function setAuthCookies(res, tokens, rememberMe = false) {
     res.cookie('accessToken', tokens.accessToken, {
         httpOnly: true,
         secure: true,
@@ -15,11 +15,12 @@ function setAuthCookies(res, tokens) {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        maxAge: rememberMe ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 24,
     });
 }
 
 export function loginController(req, res, next) {
+    const { rememberMe = false } = req.body;
     passport.authenticate('local', { session: true }, (err, user, info) => {
         if (err) return next(err);
         if (!user) return next(createHttpError('INVALID_CREDENTIALS', info?.message || 'Invalid credentials', 401));
@@ -27,7 +28,7 @@ export function loginController(req, res, next) {
             if (loginErr) return next(loginErr);
             try {
                 const tokens = await TokenService.generateTokens(user.id);
-                setAuthCookies(res, tokens);
+                setAuthCookies(res, tokens, rememberMe);
                 res.status(200).json({
                     success: true,
                     data: {
@@ -152,10 +153,8 @@ export async function registerController(req, res, next) {
             data: {
                 email,
                 password: hashedPassword,
-                role: 'USER',
                 isActive: true,
                 failedLoginAttempts: 0,
-                refreshTokenVersion: 0,
             },
         });
         res.status(201).json({
@@ -164,13 +163,11 @@ export async function registerController(req, res, next) {
                 user: {
                     id: user.id,
                     email: user.email,
-                    role: user.role,
                     isActive: user.isActive,
                     createdAt: user.createdAt,
                     updatedAt: user.updatedAt,
                     lastLoginAt: user.lastLoginAt,
                     failedLoginAttempts: user.failedLoginAttempts,
-                    refreshTokenVersion: user.refreshTokenVersion,
                 },
             },
             meta: {},
