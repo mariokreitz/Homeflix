@@ -1,0 +1,178 @@
+<div class="container mx-auto px-4 py-12">
+	<!-- Hero Section -->
+	<section class="mb-16">
+		<h1 class="text-4xl md:text-5xl font-bold mb-6">Mehr über Homeflix erfahren</h1>
+		<p class="text-xl mb-8 max-w-3xl text-gray-200">
+			Homeflix ist deine persönliche Streaming-Plattform für zu Hause. Streame deine eigenen Filme,
+			Serien und mehr auf all deinen Geräten - einfach, schnell und sicher.
+		</p>
+	</section>
+
+	<!-- Features Section -->
+	<section class="mb-16">
+		<h2 class="text-3xl font-bold mb-8">Hauptfunktionen</h2>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+			<!-- Feature 1 -->
+			<div class="bg-gray-800 p-6 rounded-lg">
+				<div class="bg-red-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+					<fa-icon [icon]="faFilm" size="lg"></fa-icon>
+				</div>
+				<h3 class="text-xl font-bold mb-2">Medien-Management</h3>
+				<p class="text-gray-300">
+					Verwalte deine Filme, Serien und Videos in einer übersichtlichen Bibliothek mit automatischen Metadaten.
+				</p>
+			</div>
+
+			<!-- Feature 2 -->
+			<div class="bg-gray-800 p-6 rounded-lg">
+				<div class="bg-red-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+					<fa-icon [icon]="faMobile" size="lg"></fa-icon>
+				</div>
+				<h3 class="text-xl font-bold mb-2">Multi-Device Streaming</h3>
+				<p class="text-gray-300">
+					Streame auf allen deinen Geräten - vom Smartphone bis zum Smart TV, alles in deinem Heimnetzwerk.
+				</p>
+			</div>
+
+			<!-- Feature 3 -->
+			<div class="bg-gray-800 p-6 rounded-lg">
+				<div class="bg-red-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+					<fa-icon [icon]="faShield" size="lg"></fa-icon>
+				</div>
+				<h3 class="text-xl font-bold mb-2">Sicherheit & Privatsphäre</h3>
+				<p class="text-gray-300">
+					Deine Daten bleiben bei dir. Keine Werbung, kein Tracking, keine Datensammlung.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- How It Works -->
+	<section class="mb-16">
+		<h2 class="text-3xl font-bold mb-8">So funktioniert's</h2>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+			<div>
+				<ol class="space-y-6">
+					<li class="flex gap-4">
+						<div class="bg-red-600 w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold">1</div>
+						<div>
+							<h3 class="text-xl font-bold mb-1">Installation</h3>
+							<p class="text-gray-300">Installiere Homeflix auf deinem Server oder NAS mit Docker.</p>
+						</div>
+					</li>
+					<li class="flex gap-4">
+						<div class="bg-red-600 w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold">2</div>
+						<div>
+							<h3 class="text-xl font-bold mb-1">Medien hinzufügen</h3>
+							<p class="text-gray-300">Füge deine Filme und Serien hinzu. Homeflix organisiert sie automatisch.</p>
+						</div>
+					</li>
+					<li class="flex gap-4">
+						<div class="bg-red-600 w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full font-bold">3</div>
+						<div>
+							<h3 class="text-xl font-bold mb-1">Streamen</h3>
+							<p class="text-gray-300">Greife von jedem Gerät in deinem Netzwerk auf deine Medien zu.</p>
+						</div>
+					</li>
+				</ol>
+			</div>
+
+			<div class="relative">
+				<div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+				<img
+							alt="Homeflix Dashboard"
+							class="w-full h-auto object-cover rounded-lg"
+							height="400"
+							ngSrc="/images/dashboard-preview.webp"
+							width="600">
+			</div>
+		</div>
+	</section>
+
+	<!-- Technical Details -->
+	<section class="mb-16">
+		<h2 class="text-3xl font-bold mb-8">Technische Details</h2>
+
+		<div class="bg-gray-800 rounded-lg p-8">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+				<div>
+					<h3 class="text-xl font-bold mb-4">System-Anforderungen</h3>
+					<ul class="space-y-2 text-gray-300">
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faCheck" class="text-green-500"></fa-icon>
+							Docker-fähiges System (Linux, macOS, Windows)
+						</li>
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faCheck" class="text-green-500"></fa-icon>
+							Mindestens 2GB RAM
+						</li>
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faCheck" class="text-green-500"></fa-icon>
+							Ausreichend Speicherplatz für deine Medien
+						</li>
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faCheck" class="text-green-500"></fa-icon>
+							Netzwerkverbindung für Streaming
+						</li>
+					</ul>
+				</div>
+				<div>
+					<h3 class="text-xl font-bold mb-4">Technologie-Stack</h3>
+					<ul class="space-y-2 text-gray-300">
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faServer" class="text-blue-500"></fa-icon>
+							Node.js & Express Backend
+						</li>
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faDatabase" class="text-blue-500"></fa-icon>
+							PostgreSQL Datenbank
+						</li>
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faAngular" class="text-blue-500"></fa-icon>
+							Angular Frontend
+						</li>
+						<li class="flex items-center gap-2">
+							<fa-icon [icon]="faDocker" class="text-blue-500"></fa-icon>
+							Docker für einfache Bereitstellung
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FAQ Section -->
+	<section class="mb-16">
+		<h2 class="text-3xl font-bold mb-8">Häufig gestellte Fragen</h2>
+
+		<div class="space-y-6">
+			@for (item of faqItems; track item.question) {
+				<div class="bg-gray-800 rounded-lg p-6">
+					<h3 class="text-xl font-bold mb-2">{{ item.question }}</h3>
+					<p class="text-gray-300">{{ item.answer }}</p>
+				</div>
+			}
+		</div>
+	</section>
+
+	<!-- CTA Section -->
+	<section>
+		<div class="bg-gradient-to-r from-red-900 to-red-600 rounded-lg p-8 text-center">
+			<h2 class="text-3xl font-bold mb-4">Bereit zum Starten?</h2>
+			<p class="text-xl mb-8 max-w-2xl mx-auto">Erlebe jetzt deine eigene Streaming-Plattform und genieße deine Medien wann und wo du
+				willst.</p>
+			<div class="flex flex-col sm:flex-row gap-4 justify-center">
+				<button class="bg-white text-red-600 hover:bg-gray-100 px-8 py-4 rounded text-xl font-medium transition-colors"
+								routerLink="/register">
+					Jetzt registrieren
+				</button>
+				<button class="bg-gray-800 hover:bg-gray-700 px-8 py-4 rounded text-xl font-medium transition-colors"
+								routerLink="/docs">
+					Dokumentation
+				</button>
+			</div>
+		</div>
+	</section>
+</div>
