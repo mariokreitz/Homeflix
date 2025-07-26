@@ -24,6 +24,11 @@ export const routes: Routes = [
         canActivate: [ noAuthGuard ],
     },
     {
+        path: 'privacy-policy',
+        loadComponent: () => import('./pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy),
+        canActivate: [ noAuthGuard ],
+    },
+    {
         path: 'dashboard',
         loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.Dashboard),
         canActivate: [ authGuard ],
