@@ -13,11 +13,9 @@ export class Dashboard {
     public onLogout() {
         this.authService.logout().subscribe({
             next: () => {
-                // Handle successful logout
-                console.log('Logout successful');
+                console.info('Logout successful');
             },
             error: (err) => {
-                // Handle error during logout
                 console.error('Logout failed', err);
             },
         });
