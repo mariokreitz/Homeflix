@@ -26,6 +26,7 @@ import { useAuthForm } from '../../shared/utils/auth-form.utils';
 export class Login {
     public readonly loginForm = useAuthForm({
         includeEmail: true,
+        includeRememberMe: true,
     });
     protected readonly error = signal<string | null>(null);
     protected readonly isLoading = signal<boolean>(false);
@@ -42,7 +43,7 @@ export class Login {
         }
 
         const formValue = this.loginForm.value;
-        const { email, password } = formValue;
+        const { email, password, rememberMe } = formValue;
 
         if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
             this.error.set('E-Mail und Passwort sind erforderlich.');
@@ -56,8 +57,7 @@ export class Login {
 
         this.isLoading.set(true);
 
-        //TODO remember me functionality 
-        this.authService.login(email.trim(), password).subscribe({
+        this.authService.login(email.trim(), password, rememberMe).subscribe({
             next: (response: ApiSuccessResponse<LoginResponse, {}>) => {
                 try {
                     if (response?.success) {
@@ -70,7 +70,7 @@ export class Login {
                     this.error.set('Ein unerwarteter Fehler ist aufgetreten.');
                 }
             },
-            error: (err: ApiErrorResponse<ErrorResponse<{}>>) => {
+            error: (err: ApiErrorResponse<ErrorResponse>) => {
                 const errorMessage = err?.error?.message;
                 this.error.set(
                   typeof errorMessage === 'string' && errorMessage.trim()

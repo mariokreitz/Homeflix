@@ -17,4 +17,5 @@ export interface AuthFormConfig {
     readonly includeUsername?: boolean;
     readonly includeEmail?: boolean;
     readonly includeConfirmPassword?: boolean;
+    readonly includeRememberMe?: boolean;
 }

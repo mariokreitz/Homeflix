@@ -4,7 +4,7 @@ import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { Subscription } from 'rxjs';
 import { getValidationErrorMessage } from '../../utils/form.utils';
 
-export type FieldType = 'text' | 'email' | 'password';
+export type FieldType = 'text' | 'email' | 'password' | 'checkbox';
 
 interface ControlState {
     readonly invalid: boolean;
@@ -21,17 +21,38 @@ interface ControlState {
     ],
     template: `
 			<div [formGroup]="form()">
-				<input
-							[attr.aria-label]="label()"
-							[attr.aria-describedby]="shouldShowError() ? controlName() + '-error' : null"
-							[attr.aria-invalid]="shouldShowError()"
-							[attr.autocomplete]="autocomplete()"
-							[formControlName]="controlName()"
-							[placeholder]="placeholder()"
-							[type]="type()"
-							class="w-full bg-gray-800 text-white p-4 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
-							(blur)="onBlur()"
-				/>
+				@if (type() === 'checkbox') {
+					<div class="flex items-center gap-2">
+						<input
+									[attr.aria-label]="label()"
+									[attr.aria-describedby]="shouldShowError() ? controlName() + '-error' : null"
+									[attr.aria-invalid]="shouldShowError()"
+									[attr.autocomplete]="autocomplete()"
+									[formControlName]="controlName()"
+									[placeholder]="placeholder()"
+									[type]="type()"
+									[name]="controlName()"
+									[id]="controlName()"
+									(change)="onChange($event)"
+									class="bg-gray-800 text-white rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+						/>
+						<label [for]="controlName()" class="select-none cursor-pointer">{{ label() }}</label>
+					</div>
+				} @else {
+					<input
+								[attr.aria-label]="label()"
+								[attr.aria-describedby]="shouldShowError() ? controlName() + '-error' : null"
+								[attr.aria-invalid]="shouldShowError()"
+								[attr.autocomplete]="autocomplete()"
+								[formControlName]="controlName()"
+								[placeholder]="placeholder()"
+								[type]="type()"
+								[name]="controlName()"
+								[id]="controlName()"
+								class="w-full bg-gray-800 text-white p-4 rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+								(blur)="onBlur()"
+					/>
+				}
 				@if (shouldShowError()) {
 					<p
 								[id]="controlName() + '-error'"
@@ -59,7 +80,7 @@ export class FormFieldComponent implements OnChanges, OnDestroy {
         const formValue = this.form();
         const controlNameValue = this.controlName();
 
-        if (!formValue || !controlNameValue || typeof controlNameValue !== 'string') {
+        if (!formValue || !controlNameValue) {
             return null;
         }
 
@@ -81,7 +102,7 @@ export class FormFieldComponent implements OnChanges, OnDestroy {
     public readonly activeErrorMessage = computed<string>(() => {
         const customMessage = this.errorMessage();
 
-        if (customMessage && typeof customMessage === 'string') {
+        if (customMessage) {
             return customMessage;
         }
 
@@ -142,6 +163,28 @@ export class FormFieldComponent implements OnChanges, OnDestroy {
 
     public ngOnDestroy(): void {
         this.cleanupSubscriptions();
+    }
+
+    public onChange(event: Event): void {
+        const formValue: FormGroup = this.form();
+        const controlNameValue: string = this.controlName();
+        if (!formValue || !controlNameValue) {
+            console.error('Form or control name is not defined.');
+            return;
+        }
+        const target = event.target as HTMLInputElement;
+        if (!target) {
+            console.error('Event target is not an HTMLInputElement.');
+            return;
+        }
+
+        const checkbox = formValue.get(controlNameValue);
+        if (!checkbox) {
+            console.error(`Control with name "${controlNameValue}" not found in form.`);
+            return;
+        }
+        checkbox.setValue(target.checked);
+
     }
 
     public onBlur(): void {

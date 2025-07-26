@@ -17,7 +17,7 @@ export function useAuthForm(config: AuthFormConfig = {}): FormGroup {
         throw new Error('Invalid password minimum length configuration');
     }
 
-    const formConfig: Record<string, [ string, readonly any[] ]> = {};
+    const formConfig: Record<string, [ string | boolean, readonly any[] ]> = {};
 
     if (config.includeEmail !== false) {
         formConfig['email'] = [
@@ -44,6 +44,13 @@ export function useAuthForm(config: AuthFormConfig = {}): FormGroup {
             [
                 Validators.required,
             ] as const,
+        ];
+    }
+
+    if (config.includeRememberMe) {
+        formConfig['rememberMe'] = [
+            false,
+            [] as const,
         ];
     }
 
