@@ -21,17 +21,34 @@ export const routes: Routes = [
     {
         path: 'learn-more',
         loadComponent: () => import('./pages/learn-more/learn-more').then(m => m.LearnMore),
-        canActivate: [ noAuthGuard ],
-    },
-    {
-        path: 'terms-of-use',
-        loadComponent: () => import('./pages/terms-of-use/terms-of-use').then(m => m.TermsOfUse),
-        canActivate: [ noAuthGuard ],
     },
     {
         path: 'privacy-policy',
         loadComponent: () => import('./pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy),
-        canActivate: [ noAuthGuard ],
+    },
+    {
+        path: 'help-center',
+        loadComponent: () => import('./pages/help-center/help-center').then(m => m.HelpCenter),
+    },
+    {
+        path: 'cookie-settings',
+        loadComponent: () => import('./pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy),
+    },
+    {
+        path: 'terms-of-use',
+        loadComponent: () => import('./pages/terms-of-use/terms-of-use').then(m => m.TermsOfUse),
+    },
+    {
+        path: 'legal-notice',
+        loadComponent: () => import('./pages/terms-of-use/terms-of-use').then(m => m.TermsOfUse),
+    },
+    {
+        path: 'media-center',
+        loadComponent: () => import('./pages/terms-of-use/terms-of-use').then(m => m.TermsOfUse),
+    },
+    {
+        path: 'contact',
+        loadComponent: () => import('./pages/terms-of-use/terms-of-use').then(m => m.TermsOfUse),
     },
     {
         path: 'dashboard',

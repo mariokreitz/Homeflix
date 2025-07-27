@@ -24,13 +24,15 @@ export class App {
         '/home',
         '/login',
         '/register',
-        '/learn-more',
-        '/about',
         '/faq',
+        '/privacy-policy',
+        '/help-center',
+        '/cookie-settings',
+        '/terms-of-use',
+        '/legal-notice',
+        '/media-center',
         '/contact',
-        '/pricing',
-        '/terms',
-        '/privacy',
+        '/learn-more',
     ];
 
     shouldShowFooter = computed(() => {
