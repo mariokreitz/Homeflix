@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-black py-16 px-4 sm:px-8">
+	<div class="max-w-6xl mx-auto">
+		<!-- Header Section -->
+		<section class="mb-16 text-center">
+			<h1 class="text-4xl font-bold mb-6">Hilfe-Center</h1>
+			<p class="text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+				Hier finden Sie Antworten auf Ihre Fragen rund um Homeflix. Durchsuchen Sie unsere Hilfethemen oder kontaktieren Sie uns direkt.
+			</p>
+
+			<!-- Search Bar -->
+			<div class="max-w-2xl mx-auto relative">
+				<div class="flex items-center bg-gray-800 rounded-lg px-4 py-2">
+					<fa-icon [icon]="faSearch" class="text-gray-400 mr-3"></fa-icon>
+					<input
+								(ngModelChange)="searchQuery.set($event)"
+								[ngModel]="searchQuery()"
+								class="bg-transparent border-none w-full py-2 text-white focus:outline-none"
+								placeholder="Wonach suchen Sie?"
+								type="text"
+					>
+				</div>
+			</div>
+		</section>
+
+		<!-- Categories Section -->
+		<section class="mb-16">
+			<h2 class="text-2xl font-bold mb-8">Hilfethemen</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+				@for (category of helpCategories(); track category.title) {
+					<div class="bg-gray-800 rounded-lg p-6 hover:bg-gray-700 transition-colors">
+						<div class="flex items-center mb-4">
+							<fa-icon [icon]="category.icon" class="text-red-600 text-3xl mr-4"></fa-icon>
+							<h3 class="text-md font-bold">{{ category.title }}</h3>
+						</div>
+						<p class="text-gray-300 mb-4">{{ category.description }}</p>
+						<a [routerLink]="category.link" class="text-red-500 hover:underline flex items-center">
+							Mehr erfahren
+						</a>
+					</div>
+				}
+			</div>
+		</section>
+
+		<!-- FAQ Section -->
+		<section class="mb-16" id="faq">
+			<h2 class="text-2xl font-bold mb-8">Häufig gestellte Fragen</h2>
+
+			@if (filteredFaqs().length === 0) {
+				<div class="bg-gray-800 rounded-lg p-8 text-center">
+					<p class="text-xl text-gray-300">Keine Ergebnisse für "{{ searchQuery() }}" gefunden.</p>
+				</div>
+			} @else {
+				<div class="space-y-4">
+					@for (faq of filteredFaqs(); track faq.question) {
+						<div class="bg-gray-800 rounded-lg p-6">
+							<h3 class="text-xl font-bold mb-2">{{ faq.question }}</h3>
+							<p class="text-gray-300">{{ faq.answer }}</p>
+						</div>
+					}
+				</div>
+			}
+		</section>
+	</div>
+</div>
