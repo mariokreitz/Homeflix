@@ -1,14 +1,16 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgcrypto]
 }
 
 model User {
-  id                  Int       @id @default(autoincrement())
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email               String    @unique
   password            String
   isActive            Boolean   @default(true)
@@ -16,4 +18,48 @@ model User {
   updatedAt           DateTime  @updatedAt
   lastLoginAt         DateTime?
   failedLoginAttempts Int       @default(0)
+}
+
+enum MediaType {
+  MOVIE
+  SERIES
+}
+
+model Media {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  releaseYear Int?
+  duration    Int? // Duration in minutes
+  posterPath  String?
+  filePath    String
+  mediaType   MediaType
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relationships
+  genres    Genre[]  @relation("MediaToGenre")
+  actors    Person[] @relation("ActorToMedia")
+  directors Person[] @relation("DirectorToMedia")
+}
+
+model Genre {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  media Media[] @relation("MediaToGenre")
+}
+
+model Person {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships - a person can be both actor and director
+  actorIn    Media[] @relation("ActorToMedia")
+  directorOf Media[] @relation("DirectorToMedia")
 }
