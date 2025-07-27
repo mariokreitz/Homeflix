@@ -63,11 +63,9 @@ export function errorHandlerMiddleware(err, req, res, next) {
 
     res.status(statusCode).json({
         success: false,
-        error: {
-            code: errorCode,
-            message,
-            details: getErrorDetails(err, req),
-        },
+        code: errorCode,
+        message,
+        details: getErrorDetails(err, req),
     });
 }
 
