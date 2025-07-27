@@ -100,10 +100,10 @@ export class Register {
                     this.isLoading.set(false);
                 }
             },
-            error: (err: ApiErrorResponse<ErrorResponse<{}>>) => {
-                const errorMessage = err?.error?.message;
+            error: (err: ApiErrorResponse<ErrorResponse>) => {
+                const errorMessage = err.error.message;
                 this.error.set(
-                  typeof errorMessage === 'string' && errorMessage.trim()
+                  errorMessage
                     ? errorMessage
                     : 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
                 );

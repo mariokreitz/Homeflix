@@ -71,12 +71,9 @@ export class Login {
                 }
             },
             error: (err: ApiErrorResponse<ErrorResponse>) => {
-                const errorMessage = err?.error?.message;
-                this.error.set(
-                  typeof errorMessage === 'string' && errorMessage.trim()
-                    ? errorMessage
-                    : 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.',
-                );
+                const errorMessage = err.error.message;
+                this.error.set(errorMessage ? errorMessage : 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+                this.isLoading.set(false);
             },
             complete: () => {
                 this.isLoading.set(false);
