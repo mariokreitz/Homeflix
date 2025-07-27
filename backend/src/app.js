@@ -10,6 +10,7 @@ import { createApiRateLimiter } from './middlewares/rateLimit.middleware.js';
 import { setupSwagger } from './config/swagger.config.js';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.middleware.js';
 import authRouter from './routes/auth.routes.js';
+import mediaRouter from './routes/media.routes.js';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
 
@@ -134,7 +135,7 @@ async function initializeApp() {
         setupHealthCheck(app);
 
         // Register API routes here
-        // app.use('/api/v1/media', mediaRouter);
+        app.use('/api/v1/media', mediaRouter);
         app.use('/api/v1/auth', authRouter);
 
         setupNotFoundHandler(app);

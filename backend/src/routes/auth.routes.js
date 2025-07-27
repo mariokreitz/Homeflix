@@ -102,6 +102,11 @@ const router = Router();
  *                 format: password
  *                 example: "password123"
  *                 description: Password for login
+ *               rememberMe:
+ *                 type: boolean
+ *                 example: false
+ *                 description: Extend refresh token lifetime if true
+ *                 default: false
  *     responses:
  *       200:
  *         description: Successful login. Tokens are set as HTTP-only cookies.
@@ -507,13 +512,11 @@ router.get('/csrf', authenticate, csrfController);
  *                 user:
  *                   id: 2
  *                   email: "newuser@example.com"
- *                   role: "USER"
  *                   isActive: true
  *                   createdAt: "2025-07-20T06:00:00.000Z"
  *                   updatedAt: "2025-07-20T06:00:00.000Z"
  *                   lastLoginAt: null
  *                   failedLoginAttempts: 0
- *                   refreshTokenVersion: 0
  *               meta: {}
  *       400:
  *         description: Invalid input
