@@ -31,8 +31,8 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/help-center/help-center').then(m => m.HelpCenter),
     },
     {
-        path: 'cookie-settings',
-        loadComponent: () => import('./pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy),
+        path: 'cookie-policy',
+        loadComponent: () => import('./pages/cookie/cookie').then(m => m.Cookie),
     },
     {
         path: 'terms-of-use',
