@@ -15,4 +15,8 @@ export class User {
     public clearUser(): void {
         this._user.set(null);
     }
+
+    public isLoggedIn(): boolean {
+        return !!this._user();
+    }
 }

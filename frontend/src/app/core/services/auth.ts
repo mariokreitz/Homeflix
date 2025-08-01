@@ -12,23 +12,12 @@ import { User } from './user';
     providedIn: 'root',
 })
 export class Auth {
-    private readonly _isAuthenticated: WritableSignal<boolean> = signal<boolean>(false);
-    public readonly isAuthenticated: Signal<boolean> = this._isAuthenticated.asReadonly();
-
     private readonly _sessionId: WritableSignal<string | undefined> = signal<string | undefined>(undefined);
     public readonly sessionId: Signal<string | undefined> = this._sessionId.asReadonly();
-
     private readonly _apiUrl: string = environment.apiUrl;
     private readonly http: HttpClient = inject(HttpClient);
     private readonly router: Router = inject(Router);
     private readonly userService: User = inject(User);
-
-    public register(email: string, password: string): Observable<ApiSuccessResponse<RegisterResponse, {}>> {
-        return this.http.post<ApiSuccessResponse<RegisterResponse, {}>>(`${this._apiUrl}/auth/register`, {
-            email,
-            password,
-        }, {});
-    }
 
     public login(email: string, password: string, rememberMe: boolean = false): Observable<ApiSuccessResponse<LoginResponse, {}>> {
         return this.http.post<ApiSuccessResponse<LoginResponse, {}>>(`${this._apiUrl}/auth/login`, {
@@ -38,7 +27,6 @@ export class Auth {
         }, {}).pipe(
           tap((response: ApiSuccessResponse<LoginResponse, {}>) => {
               if (response?.success && response.data?.sessionId) {
-                  this._isAuthenticated.set(true);
                   this._sessionId.set(response.data.sessionId);
 
                   if (response.data?.user) {
@@ -46,8 +34,6 @@ export class Auth {
                   }
 
                   this.router.navigate([ '/dashboard' ]);
-              } else {
-                  this._isAuthenticated.set(false);
               }
           }),
         );
@@ -56,10 +42,16 @@ export class Auth {
     public logout(): Observable<ApiSuccessResponse<LogoutResponse, {}>> {
         return this.http.post<ApiSuccessResponse<LogoutResponse, {}>>(`${this._apiUrl}/auth/logout`, {}).pipe(
           tap(() => {
-              this._isAuthenticated.set(false);
               this.userService.clearUser();
               this.router.navigate([ '/' ]);
           }),
         );
+    }
+
+    public register(email: string, password: string): Observable<ApiSuccessResponse<RegisterResponse, {}>> {
+        return this.http.post<ApiSuccessResponse<RegisterResponse, {}>>(`${this._apiUrl}/auth/register`, {
+            email,
+            password,
+        }, {});
     }
 }

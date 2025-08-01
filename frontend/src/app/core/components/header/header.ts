@@ -22,9 +22,9 @@ export class Header {
         const name = this.userName();
         return name?.charAt(0)?.toUpperCase() ?? 'B';
     });
-    private readonly authService = inject(Auth);
-    public readonly isAuthenticated = computed((): boolean => this.authService.isAuthenticated());
+    private readonly authService: Auth = inject(Auth);
     private readonly userService = inject(User);
+    public readonly isLoggedIn = computed((): boolean => this.userService.isLoggedIn());
     public readonly user = computed((): UserInterface | null => this.userService.user());
     public readonly userName = computed((): string => {
         const user = this.user();
@@ -32,7 +32,7 @@ export class Header {
     });
     private readonly router = inject(Router);
     public readonly showLoginButton = computed((): boolean =>
-      !this.isAuthenticated() && (this.router.url !== '/login' && this.router.url !== '/register'),
+      !this.isLoggedIn() && (this.router.url !== '/login' && this.router.url !== '/register'),
     );
 
     public onLogout(): void {
