@@ -4,7 +4,15 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiSuccessResponse } from '../../shared/models/api_response';
-import { LoginResponse, LogoutResponse, RegisterResponse } from '../../shared/models/auth';
+import {
+    CsrfTokenMetaResponse,
+    CsrfTokenResponse,
+    LoginResponse,
+    LogoutResponse,
+    RefreshResponse,
+    RegisterResponse,
+    SessionResponse,
+} from '../../shared/models/auth';
 import { UserInterface } from '../../shared/models/user';
 import { User } from './user';
 
@@ -44,6 +52,46 @@ export class Auth {
           tap(() => {
               this.userService.clearUser();
               this.router.navigate([ '/' ]);
+          }),
+        );
+    }
+
+    public revokeSession(): Observable<ApiSuccessResponse<LogoutResponse, {}>> {
+        return this.http.post<ApiSuccessResponse<LogoutResponse, {}>>(`${this._apiUrl}/auth/token/revoke`, {}).pipe(
+          tap(() => {
+              this.userService.clearUser();
+              this._sessionId.set(undefined);
+              this.router.navigate([ '/' ]);
+          }),
+        );
+    }
+
+    public refreshToken(): Observable<ApiSuccessResponse<RefreshResponse, {}>> {
+        return this.http.post<ApiSuccessResponse<RefreshResponse, {}>>(`${this._apiUrl}/auth/token/refresh`, {}).pipe(
+          tap((response: ApiSuccessResponse<RefreshResponse, {}>) => {
+              if (response?.success && response.data?.sessionId) {
+                  this._sessionId.set(response.data.sessionId);
+              }
+          }),
+        );
+    }
+
+    public getCsrfToken() {
+        return this.http.get<ApiSuccessResponse<CsrfTokenResponse, CsrfTokenMetaResponse>>(`${this._apiUrl}/auth/token/csrf-token`).pipe(
+          tap((response: ApiSuccessResponse<CsrfTokenResponse, CsrfTokenMetaResponse>) => {
+              if (response?.success && response.data?.csrfToken) {
+                  this._sessionId.set(response.meta.sessionId);
+              }
+          }),
+        );
+    }
+
+    public verifySession(): Observable<ApiSuccessResponse<SessionResponse, {}>> {
+        return this.http.get<ApiSuccessResponse<SessionResponse, {}>>(`${this._apiUrl}/auth/verify-session`).pipe(
+          tap((response: ApiSuccessResponse<SessionResponse, {}>) => {
+              if (response?.success && response.data?.sessionId) {
+                  this._sessionId.set(response.data.sessionId);
+              }
           }),
         );
     }

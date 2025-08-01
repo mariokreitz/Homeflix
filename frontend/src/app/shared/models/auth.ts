@@ -11,11 +11,14 @@ export interface LoginResponse {
 
 export interface SessionResponse {
     sessionId: string;
-    user: Pick<UserInterface, 'id'>;
 }
 
 export interface LogoutResponse {
     message: string;
+}
+
+export interface RefreshResponse {
+    sessionId: string;
 }
 
 export interface CsrfTokenResponse {
