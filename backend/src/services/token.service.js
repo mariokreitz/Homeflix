@@ -128,6 +128,5 @@ export const TokenService = {
     invalidateSession,
     refreshAccessToken,
     revokeSession,
-    rotateRefreshToken,
     getCsrfToken,
 };

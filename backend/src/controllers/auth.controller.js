@@ -101,6 +101,7 @@ export async function revokeSessionController(req, res, next) {
         await TokenService.revokeSession(sessionId);
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
+        res.clearCookie('csrfToken');
         res.status(200).json({
             success: true,
             data: { message: 'Session revoked successfully' },
@@ -171,9 +172,6 @@ export async function verifySessionController(req, res, next) {
             success: true,
             data: {
                 sessionId: req.user.sessionId,
-                user: {
-                    id: req.user.id,
-                },
             },
             meta: {},
         });
