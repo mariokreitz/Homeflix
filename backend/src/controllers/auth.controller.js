@@ -17,6 +17,12 @@ function setAuthCookies(res, tokens, rememberMe = false) {
         sameSite: 'strict',
         maxAge: rememberMe ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 24,
     });
+    res.cookie('csrfToken', tokens.csrfToken, {
+        httpOnly: false,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 1000 * 60 * 60 * 24,
+    });
 }
 
 export function loginController(req, res, next) {
@@ -32,12 +38,10 @@ export function loginController(req, res, next) {
                 res.status(200).json({
                     success: true,
                     data: {
-                        csrfToken: tokens.csrfToken,
                         sessionId: tokens.sessionId,
                         user: {
                             id: user.id,
                             email: user.email,
-                            role: user.role,
                         },
                     },
                     meta: {},
@@ -56,6 +60,7 @@ export async function logoutController(req, res, next) {
         await TokenService.invalidateSession(sessionId);
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
+        res.clearCookie('csrfToken');
         res.status(200).json({
             success: true,
             data: { message: 'Logout successful' },
@@ -74,12 +79,11 @@ export async function refreshTokenController(req, res, next) {
         setAuthCookies(res, {
             accessToken: result.accessToken,
             refreshToken: req.cookies?.refreshToken ?? result.refreshToken,
+            csrfToken: result.csrfToken,
         });
         res.status(200).json({
             success: true,
             data: {
-                accessToken: result.accessToken,
-                csrfToken: result.csrfToken,
                 sessionId: result.sessionId,
             },
             meta: {},
@@ -89,26 +93,6 @@ export async function refreshTokenController(req, res, next) {
     }
 }
 
-export async function rotateTokenController(req, res, next) {
-    const oldRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
-    if (!oldRefreshToken) return next(createHttpError('NO_REFRESH_TOKEN', 'Refresh token is missing', 401));
-    try {
-        const result = await TokenService.rotateRefreshToken(oldRefreshToken);
-        setAuthCookies(res, result);
-        res.status(200).json({
-            success: true,
-            data: {
-                accessToken: result.accessToken,
-                refreshToken: result.refreshToken,
-                csrfToken: result.csrfToken,
-                sessionId: result.sessionId,
-            },
-            meta: {},
-        });
-    } catch (err) {
-        next(err);
-    }
-}
 
 export async function revokeSessionController(req, res, next) {
     const sessionId = req.user?.sessionId || req.body?.sessionId;

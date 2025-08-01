@@ -17,7 +17,7 @@ export async function authenticate(req, res, next) {
 
 export async function requireCsrf(req, res, next) {
     const sessionId = req.user?.sessionId;
-    const csrfToken = req.headers['x-csrf-token'];
+    const csrfToken = req.cookies?.csrfToken || req.headers['x-csrf-token'];
     if (!sessionId || !csrfToken) {
         return next(createHttpError('CSRF_MISSING', 'CSRF token is missing', 403));
     }

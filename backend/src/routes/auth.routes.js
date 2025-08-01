@@ -7,7 +7,6 @@ import {
     refreshTokenController,
     registerController,
     revokeSessionController,
-    rotateTokenController,
     verifySessionController,
 } from '../controllers/auth.controller.js';
 
@@ -292,75 +291,6 @@ router.post('/logout', authenticate, requireCsrf, logoutController);
  *                 details: {}
  */
 router.post('/refresh', refreshTokenController);
-
-/**
- * @openapi
- * /api/v1/auth/rotate:
- *   post:
- *     summary: Rotate the refresh token and get new tokens
- *     description: |
- *       Rotates the refresh token and returns new access, refresh, and CSRF tokens.
- *       Use this endpoint to proactively rotate tokens for enhanced security.
- *     tags: [Auth]
- *     security:
- *       - cookieAuth: []
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               refreshToken:
- *                 type: string
- *                 example: "jwt-refresh-token"
- *                 description: Refresh token to rotate (optional if sent in cookie)
- *     responses:
- *       200:
- *         description: Successful token rotation
- *         headers:
- *           Set-Cookie:
- *             description: Sets new accessToken and refreshToken as HTTP-only cookies
- *             schema:
- *               type: string
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Success'
- *             example:
- *               success: true
- *               data:
- *                 accessToken: "jwt-access-token"
- *                 refreshToken: "jwt-refresh-token"
- *                 csrfToken: "uuid-csrf-token"
- *                 sessionId: "uuid-session-id"
- *               meta: {}
- *       401:
- *         description: Unauthorized or invalid token
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *             example:
- *               success: false
- *               error:
- *                 code: "NO_REFRESH_TOKEN"
- *                 message: "Refresh token is missing"
- *                 details: {}
- *       403:
- *         description: Token expired or invalid
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
- *             example:
- *               success: false
- *               error:
- *                 code: "INVALID_TOKEN"
- *                 message: "Refresh token is invalid or expired"
- *                 details: {}
- */
-router.post('/rotate', rotateTokenController);
 
 /**
  * @openapi
