@@ -304,7 +304,7 @@ router.post('/logout', authenticate, requireCsrf, logoutController);
 
 /**
  * @openapi
- * /api/v1/auth/refresh:
+ * /api/v1/auth/token/refresh:
  *   post:
  *     summary: Refresh access token
  *     tags: [Auth]
@@ -331,11 +331,11 @@ router.post('/logout', authenticate, requireCsrf, logoutController);
  *       '403':
  *         $ref: '#/components/responses/Forbidden'
  */
-router.post('/refresh', refreshTokenController);
+router.post('/token/refresh', refreshTokenController);
 
 /**
  * @openapi
- * /api/v1/auth/revoke:
+ * /api/v1/auth/token/revoke:
  *   post:
  *     summary: Revoke session and tokens
  *     tags: [Auth]
@@ -364,11 +364,11 @@ router.post('/refresh', refreshTokenController);
  *       '403':
  *         $ref: '#/components/responses/Forbidden'
  */
-router.post('/revoke', authenticate, requireCsrf, revokeSessionController);
+router.post('/token/revoke', authenticate, requireCsrf, revokeSessionController);
 
 /**
  * @openapi
- * /api/v1/auth/csrf:
+ * /api/v1/auth/token/csrf:
  *   get:
  *     summary: Get CSRF token
  *     tags: [Auth]
@@ -384,7 +384,7 @@ router.post('/revoke', authenticate, requireCsrf, revokeSessionController);
  *       '401':
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get('/csrf', authenticate, csrfController);
+router.get('/token/csrf', authenticate, csrfController);
 
 /**
  * @openapi
