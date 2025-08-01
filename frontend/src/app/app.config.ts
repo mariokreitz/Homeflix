@@ -1,26 +1,21 @@
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import {
-    ApplicationConfig,
-    inject,
-    provideAppInitializer,
-    provideBrowserGlobalErrorListeners,
-    provideZonelessChangeDetection,
-} from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi, withXsrfConfiguration } from '@angular/common/http';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
-import { csrfInterceptor } from './core/interceptor/csrf-interceptor';
-import { Auth } from './core/services/auth';
+import { interceptorProviders } from './core/interceptor/interceptors';
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideHttpClient(withInterceptors([ csrfInterceptor ])),
+        provideRouter(routes),
+        interceptorProviders,
+        provideHttpClient(
+          withXsrfConfiguration({
+              cookieName: 'csrfToken',
+              headerName: 'x-xsrf-token',
+          }),
+          withInterceptorsFromDi(),
+        ),
         provideBrowserGlobalErrorListeners(),
         provideZonelessChangeDetection(),
-        provideRouter(routes),
-        provideAppInitializer(() => {
-            const authService = inject(Auth);
-            return firstValueFrom(authService.initialize());
-        }),
     ],
 };

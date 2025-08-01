@@ -5,7 +5,6 @@ export interface RegisterResponse {
 }
 
 export interface LoginResponse {
-    csrfToken: string;
     sessionId: string;
     user: Pick<UserInterface, 'id' | 'email'>;
 }
@@ -27,13 +26,9 @@ export interface CsrfTokenMetaResponse {
     sessionId: string;
 }
 
-export interface ErrorResponse<DetailsType extends Object = {}> {
-    success: boolean;
-    error: Error<DetailsType>;
-}
-
-interface Error<DetailsType extends Object> {
-    code: string;
-    message: string;
-    details: DetailsType;
+export interface ErrorResponse {
+    readonly error: string,
+    readonly method: string,
+    readonly path: string,
+    readonly timestamp: string
 }

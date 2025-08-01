@@ -6,9 +6,7 @@ export interface ApiSuccessResponse<DataType extends Object, MetaType extends Ob
 
 export interface ApiErrorResponse<DetailsType extends Object> {
     success: boolean;
-    error: {
-        code: string;
-        message: string;
-        details?: DetailsType;
-    };
+    code: string;
+    message: string;
+    details?: DetailsType;
 }

@@ -78,8 +78,8 @@ export class Register {
                                     this.error.set('Registrierung erfolgreich, aber automatische Anmeldung fehlgeschlagen. Bitte melden Sie sich manuell an.');
                                 }
                             },
-                            error: (loginErr: ApiErrorResponse<ErrorResponse<{}>>) => {
-                                const errorMessage = loginErr?.error?.message;
+                            error: (loginErr: ApiErrorResponse<ErrorResponse>) => {
+                                const errorMessage = loginErr?.message;
                                 this.error.set(
                                   typeof errorMessage === 'string' && errorMessage.trim()
                                     ? `Registrierung erfolgreich, aber Anmeldung fehlgeschlagen: ${errorMessage}`
@@ -101,7 +101,7 @@ export class Register {
                 }
             },
             error: (err: ApiErrorResponse<ErrorResponse>) => {
-                const errorMessage = err.error.message;
+                const errorMessage = err.message;
                 this.error.set(
                   errorMessage
                     ? errorMessage
