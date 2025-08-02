@@ -34,12 +34,10 @@ async function getRateLimitStore() {
 function rateLimitHandler(req, res) {
     res.status(429).json({
         success: false,
-        error: {
-            code: 'RATE_LIMIT_EXCEEDED',
-            message: 'Too many requests. Please try again later.',
-            details: {
-                retryAfter: res.getHeader('Retry-After') || '15 minutes',
-            },
+        code: 'RATE_LIMIT_EXCEEDED',
+        message: 'Too many requests. Please try again later.',
+        details: {
+            retryAfter: res.getHeader('Retry-After') || '15 minutes',
         },
     });
     serverLogger.warn('Rate limit exceeded', {
