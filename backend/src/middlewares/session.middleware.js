@@ -1,14 +1,11 @@
 import { RedisStore } from 'connect-redis';
 import { getRedisClient, initRedisClient } from '../services/redis.service.js';
 import { dbLogger } from '../services/logger.service.js';
-import { SESSION_PREFIX } from '../config/env.config.js';
+import { REDIS_STORE_CONFIG } from '../config/session.config.js';
 
 let redisStore = null;
 let storeReady = false;
 
-/**
- * Creates a new RedisStore instance for session management.
- */
 async function createSessionStore() {
     await initRedisClient();
     const client = getRedisClient();
@@ -19,28 +16,23 @@ async function createSessionStore() {
 
     return new RedisStore({
         client,
-        prefix: SESSION_PREFIX || 'homeflix:session:',
-        ttl: 86400,
-        disableTouch: false,
+        ...REDIS_STORE_CONFIG,
     });
 }
 
-/**
- * Initializes the session store with Redis.
- */
 export async function initSessionStore() {
     if (storeReady && redisStore) {
-        dbLogger.info('Session store already initialized');
+        dbLogger.debug('RedisStore for Sessions already initialized, returning existing store');
         return redisStore;
     }
 
     try {
         redisStore = await createSessionStore();
         storeReady = true;
-        dbLogger.info('RedisStore for session successfully initialized');
+        dbLogger.info('RedisStore for Sessions initialized successfully');
         return redisStore;
     } catch (err) {
-        dbLogger.error('Failed to initialize RedisStore for sessions', {
+        dbLogger.error('Error during the initialization of the RedisStore', {
             error: err?.message ?? String(err),
             stack: err?.stack,
         });

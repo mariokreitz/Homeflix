@@ -5,23 +5,27 @@ import { prisma } from '../services/prisma.service.js';
 import passport from '../services/passport.service.js';
 
 function setAuthCookies(res, tokens, rememberMe = false) {
+    const commonOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+    };
+
     res.cookie('accessToken', tokens.accessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: 1000 * 60 * 15,
+        ...commonOptions,
+        maxAge: 15 * 60 * 1000,
     });
+
     res.cookie('refreshToken', tokens.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: rememberMe ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 24,
+        ...commonOptions,
+        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000, // 7 or 1 day
     });
+
     res.cookie('csrfToken', tokens.csrfToken, {
+        ...commonOptions,
         httpOnly: false,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: 1000 * 60 * 60 * 24,
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
     });
 }
 

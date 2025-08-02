@@ -4,7 +4,7 @@ import cors from 'cors';
 import { devRequestLogger, requestLogger } from './middlewares/requestLogger.middleware.js';
 import session from 'express-session';
 import { getSessionStore, initSessionStore, isSessionStoreReady } from './middlewares/session.middleware.js';
-import { CORS_ORIGIN, isProduction, SESSION_SECRET } from './config/env.config.js';
+import { CORS_ORIGIN, isProduction } from './config/env.config.js';
 import { connectPrisma } from './services/prisma.service.js';
 import { createApiRateLimiter } from './middlewares/rateLimit.middleware.js';
 import { setupSwagger } from './config/swagger.config.js';
@@ -13,6 +13,8 @@ import authRouter from './routes/auth.routes.js';
 import mediaRouter from './routes/media.routes.js';
 import passport from 'passport';
 import cookieParser from 'cookie-parser';
+import { SESSION_CONFIG } from './config/session.config.js';
+import { sessionExpiryMiddleware } from './middlewares/sessionExpiry.middleware.js';
 
 const app = express();
 
@@ -66,18 +68,12 @@ function setupSession(app) {
     }
     app.use(
         session({
+            ...SESSION_CONFIG,
             store: getSessionStore(),
-            secret: SESSION_SECRET,
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                httpOnly: true,
-                secure: isProduction,
-                sameSite: 'strict',
-                maxAge: 1000 * 60 * 60 * 24 * 7,
-            },
         }),
     );
+
+    app.use('/api/v1/', sessionExpiryMiddleware);
 }
 
 /**
