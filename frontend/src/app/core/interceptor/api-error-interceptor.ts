@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { ApiErrorResponse } from '../../shared/models/api_response';
 import { ErrorResponse } from '../../shared/models/auth';
 
@@ -10,7 +11,9 @@ export class ApiErrorInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
           catchError((responseError: HttpErrorResponse): Observable<never> => {
               const error: ApiErrorResponse<ErrorResponse> = responseError.error;
-              console.debug(error);
+              if (!environment.production) {
+                  console.debug(error);
+              }
               return throwError((): string => error?.message);
           }),
         );
