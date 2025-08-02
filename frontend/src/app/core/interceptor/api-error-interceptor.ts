@@ -11,7 +11,7 @@ export class ApiErrorInterceptor implements HttpInterceptor {
           catchError((responseError: HttpErrorResponse): Observable<never> => {
               const error: ApiErrorResponse<ErrorResponse> = responseError.error;
               console.debug(error);
-              return throwError((): string => error.message);
+              return throwError((): string => error?.message);
           }),
         );
     }

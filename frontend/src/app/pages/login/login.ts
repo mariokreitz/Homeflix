@@ -5,8 +5,8 @@ import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { AuthFormComponent } from '../../shared/components/auth-form/auth-form';
 import { FormFieldComponent } from '../../shared/components/form-field/form-field';
-import { ApiErrorResponse, ApiSuccessResponse } from '../../shared/models/api_response';
-import { ErrorResponse, LoginResponse } from '../../shared/models/auth';
+import { ApiSuccessResponse } from '../../shared/models/api_response';
+import { LoginResponse } from '../../shared/models/auth';
 import { useAuthForm } from '../../shared/utils/auth-form.utils';
 
 @Component({
@@ -70,9 +70,8 @@ export class Login {
                     this.error.set('Ein unerwarteter Fehler ist aufgetreten.');
                 }
             },
-            error: (err: ApiErrorResponse<ErrorResponse>) => {
-                const errorMessage = err.message;
-                this.error.set(errorMessage ? errorMessage : 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+            error: (err: string) => {
+                this.error.set(err ? err : 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
                 this.isLoading.set(false);
             },
             complete: () => {

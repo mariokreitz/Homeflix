@@ -9,7 +9,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
         ReactiveFormsModule,
     ],
     template: `
-			<form [formGroup]="form()" (ngSubmit)="handleSubmit()" class="flex flex-col space-y-6">
+			<form [formGroup]="form()" (ngSubmit)="handleSubmit($event)" class="flex flex-col space-y-6">
 				<ng-content></ng-content>
 				<button
 							[disabled]="form().invalid || isLoading()"
@@ -57,7 +57,9 @@ export class AuthFormComponent {
 
     public readonly submit = output<void>();
 
-    public handleSubmit(): void {
+    public handleSubmit(event: Event): void {
+        event.preventDefault();
+        event.stopPropagation();
         const currentForm = this.form();
 
         if (!currentForm || typeof currentForm.invalid === 'undefined') {

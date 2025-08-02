@@ -100,13 +100,8 @@ export class Register {
                     this.isLoading.set(false);
                 }
             },
-            error: (err: ApiErrorResponse<ErrorResponse>) => {
-                const errorMessage = err.message;
-                this.error.set(
-                  errorMessage
-                    ? errorMessage
-                    : 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
-                );
+            error: (err: string) => {
+                this.error.set(err ? err : 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
                 this.isLoading.set(false);
             },
         });
