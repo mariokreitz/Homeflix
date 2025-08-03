@@ -9,6 +9,7 @@ import {
     revokeSessionController,
     verifySessionController,
 } from '../controllers/auth.controller.js';
+import { validateSessionStrict } from '../middlewares/sessionValidation.middleware.js';
 
 const router = Router();
 
@@ -447,5 +448,6 @@ router.post('/register', registerController);
  *       '401':
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.get('/verify-session', authenticate, verifySessionController);
+router.get('/verify-session', authenticate, validateSessionStrict, verifySessionController);
+
 export default router;

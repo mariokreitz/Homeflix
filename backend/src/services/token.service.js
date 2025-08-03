@@ -18,6 +18,13 @@ async function getTokenSession(sessionId, createIfNotExists = false) {
         const sessionKey = `${SESSION_PREFIX}${sessionId}`;
         const sessionRaw = await redis.get(sessionKey);
 
+        if (!sessionRaw) {
+            if (createIfNotExists) {
+                return {};
+            }
+            throw createHttpError('SESSION_NOT_FOUND', 'Session nicht gefunden', 401);
+        }
+
         const redisSession = JSON.parse(sessionRaw);
 
         let expressSession = null;
@@ -30,6 +37,7 @@ async function getTokenSession(sessionId, createIfNotExists = false) {
             });
         }
 
+        // Daten aus beiden Quellen zusammenführen, wobei Redis-Daten Priorität haben
         const mergedSession = {
             ...(expressSession || {}),
             ...redisSession,
@@ -41,11 +49,14 @@ async function getTokenSession(sessionId, createIfNotExists = false) {
 
         return mergedSession;
     } catch (err) {
+        if (err.statusCode === 401) {
+            throw err; // Re-throw HTTP errors
+        }
         serverLogger.error('Fehler beim Abrufen der Token-Session', {
             error: err?.message,
             sessionId,
         });
-        throw err;
+        throw createHttpError('SESSION_ERROR', 'Fehler beim Abrufen der Session', 500);
     }
 }
 
@@ -155,5 +166,6 @@ export const TokenService = {
     validateCsrfToken,
     refreshAccessToken,
     getCsrfToken,
+    getTokenSession,
     invalidateSession: SessionService.invalidateSession,
 };

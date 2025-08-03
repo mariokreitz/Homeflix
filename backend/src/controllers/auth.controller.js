@@ -178,12 +178,21 @@ export async function verifySessionController(req, res, next) {
             return next(createHttpError('UNAUTHORIZED', 'User not authenticated', 401));
         }
 
+        const sessionData = await SessionService.getSessionData(req.user.sessionId);
+        const tokenSession = await TokenService.getTokenSession(req.user.sessionId);
+
         res.status(200).json({
             success: true,
             data: {
                 sessionId: req.user.sessionId,
+                userId: req.user.id,
+                authMethod: req.user.authMethod,
+                lastActivity: tokenSession.lastActivity,
+                isValid: true,
             },
-            meta: {},
+            meta: {
+                timestamp: new Date().toISOString(),
+            },
         });
     } catch (err) {
         next(err);

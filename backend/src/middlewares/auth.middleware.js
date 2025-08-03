@@ -13,24 +13,42 @@ export async function authenticate(req, res, next) {
     try {
         if (token) {
             const payload = await TokenService.validateAccessToken(token);
-            req.user = { id: payload.userId, sessionId: payload.sessionId };
+
+            const tokenSession = await TokenService.getTokenSession(payload.sessionId);
+            if (!tokenSession) {
+                return next(createHttpError('INVALID_TOKEN_SESSION', 'Token session invalid', 401));
+            }
+
+            req.user = {
+                id: payload.userId,
+                sessionId: payload.sessionId,
+                authMethod: 'token',
+            };
         } else if (sessionId) {
             const sessionData = await SessionService.getSessionData(sessionId);
+
             if (!sessionData || !sessionData.passport?.user) {
                 return next(createHttpError('INVALID_SESSION', 'Invalid session', 401));
             }
 
-            const tokenSessionId = sessionData.sessionId;
-            if (!tokenSessionId) {
+            if (!sessionId) {
                 return next(createHttpError('INVALID_SESSION', 'Token session not linked', 401));
+            }
+
+            try {
+                await TokenService.getTokenSession(sessionId);
+            } catch (err) {
+                return next(createHttpError('EXPIRED_SESSION', 'Session expired', 401));
             }
 
             req.user = {
                 id: sessionData.passport.user,
-                sessionId: tokenSessionId,
+                sessionId,
+                authMethod: 'session',
             };
         }
 
+        await SessionService.touchSession(req.user.sessionId);
         next();
     } catch (err) {
         next(err);
