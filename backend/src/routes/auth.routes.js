@@ -331,7 +331,7 @@ router.post('/logout', authenticate, requireCsrf, logoutController);
  *       '403':
  *         $ref: '#/components/responses/Forbidden'
  */
-router.post('/token/refresh', refreshTokenController);
+router.post('/token/refresh', requireCsrf, refreshTokenController);
 
 /**
  * @openapi
@@ -448,5 +448,4 @@ router.post('/register', registerController);
  *         $ref: '#/components/responses/Unauthorized'
  */
 router.get('/verify-session', authenticate, verifySessionController);
-
 export default router;

@@ -3,6 +3,7 @@ import { TokenService } from '../services/token.service.js';
 import bcrypt from 'bcrypt';
 import { prisma } from '../services/prisma.service.js';
 import passport from '../services/passport.service.js';
+import { SessionService } from '../services/session.service.js';
 
 function setAuthCookies(res, tokens, rememberMe = false) {
     const commonOptions = {
@@ -38,6 +39,9 @@ export function loginController(req, res, next) {
             if (loginErr) return next(loginErr);
             try {
                 const tokens = await TokenService.generateTokens(user.id);
+
+                await SessionService.linkSessionWithTokens(req.sessionID, user.id, tokens);
+
                 setAuthCookies(res, tokens, rememberMe);
                 res.status(200).json({
                     success: true,
@@ -61,7 +65,9 @@ export async function logoutController(req, res, next) {
     const sessionId = req.user?.sessionId;
     if (!sessionId) return next(createHttpError('SESSION_ID_MISSING', 'Session ID is missing', 401));
     try {
+        await SessionService.invalidateSession(sessionId);
         await TokenService.invalidateSession(sessionId);
+
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         res.clearCookie('csrfToken');
@@ -102,7 +108,7 @@ export async function revokeSessionController(req, res, next) {
     const sessionId = req.user?.sessionId || req.body?.sessionId;
     if (!sessionId) return next(createHttpError('SESSION_ID_MISSING', 'Session ID is missing', 400));
     try {
-        await TokenService.revokeSession(sessionId);
+        await TokenService.invalidateSession(sessionId);
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         res.clearCookie('csrfToken');

@@ -1,42 +1,81 @@
 import { dbLogger } from '../services/logger.service.js';
+import { SessionService } from '../services/session.service.js';
 
-/**
- * Checks and updates the session expiry time
- */
 export function sessionExpiryMiddleware(req, res, next) {
     if (req.session && req.isAuthenticated && req.isAuthenticated()) {
-        req.session.lastActivity = Date.now();
+        const sessionId = req.sessionID;
 
-        const maxInactivityTime = 30 * 60 * 1000; // 30 minutes
-        const lastActivity = req.session.lastActivity || Date.now();
-
-        if (Date.now() - lastActivity > maxInactivityTime) {
-            dbLogger.info('Session closed due to inactivity', {
-                userId: req.user?.id,
-                sessionId: req.sessionID,
-            });
-
-            req.session.destroy((err) => {
-                if (err) {
-                    dbLogger.error('Error destroying session', {
-                        error: err.message,
-                        sessionId: req.sessionID,
-                    });
+        SessionService.getSessionData(sessionId)
+            .then(session => {
+                if (!session) {
+                    return handleInvalidSession(req, res);
                 }
 
-                res.clearCookie('accessToken');
-                res.clearCookie('refreshToken');
-                res.clearCookie('csrfToken');
-                return res.status(401).json({
-                    success: false,
-                    code: 'SESSION_EXPIRED',
-                    message: 'The session has expired. Please log in again.',
-                    details: {},
-                });
-            });
-            return;
-        }
-    }
+                const lastActivity = session.lastActivity ? new Date(session.lastActivity).getTime() : Date.now();
+                const maxInactivityTime = 30 * 60 * 1000; // 30 Minuten
 
-    next();
+                if (Date.now() - lastActivity > maxInactivityTime) {
+                    return handleExpiredSession(req, res, sessionId);
+                }
+
+                SessionService.touchSession(sessionId)
+                    .catch(err => {
+                        dbLogger.error('Error touching session', {
+                            error: err.message,
+                            sessionId,
+                        });
+                    });
+
+                next();
+            })
+            .catch(err => {
+                dbLogger.error('Error checking session', {
+                    error: err.message,
+                    sessionId: req.sessionID,
+                });
+                next();
+            });
+    } else {
+        next();
+    }
+}
+
+function handleInvalidSession(req, res) {
+    dbLogger.warn('Invalid session detected', { sessionId: req.sessionID });
+    clearAuthCookies(res);
+    return res.status(401).json({
+        success: false,
+        code: 'INVALID_SESSION',
+        message: 'Invalid session. Please log in again.',
+        details: {},
+    });
+}
+
+function handleExpiredSession(req, res, sessionId) {
+    dbLogger.info('Session expired due to inactivity', {
+        userId: req.user?.id,
+        sessionId,
+    });
+
+    SessionService.invalidateSession(sessionId)
+        .catch(err => {
+            dbLogger.error('Error invalidating expired session', {
+                error: err.message,
+                sessionId,
+            });
+        });
+
+    clearAuthCookies(res);
+    return res.status(401).json({
+        success: false,
+        code: 'SESSION_EXPIRED',
+        message: 'The session has expired. Please log in again.',
+        details: {},
+    });
+}
+
+function clearAuthCookies(res) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.clearCookie('csrfToken');
 }

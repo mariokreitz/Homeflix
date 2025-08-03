@@ -1,6 +1,6 @@
 import { createClient } from 'redis';
 import { REDIS_URL } from '../config/env.config.js';
-import { serverLogger } from './logger.service.js';
+import { consoleLogger, serverLogger } from './logger.service.js';
 
 let redisClient = null;
 let connectionAttempts = 0;
@@ -15,9 +15,11 @@ function handleRedisEvents(client) {
     });
     client.on('reconnecting', () => {
         serverLogger.info('Redis client reconnecting');
+        consoleLogger.info('Redis client reconnecting');
     });
     client.on('connect', () => {
         serverLogger.info('Redis client connected');
+        consoleLogger.info('Redis client connected');
         connectionAttempts = 0;
     });
 }

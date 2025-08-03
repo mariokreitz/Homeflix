@@ -15,6 +15,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import { SESSION_CONFIG } from './config/session.config.js';
 import { sessionExpiryMiddleware } from './middlewares/sessionExpiry.middleware.js';
+import { startSessionCleanupJob } from './jobs/session-cleanup.job.js';
 
 const app = express();
 
@@ -121,16 +122,18 @@ async function initializeApp() {
         setupLogging(app);
         setupParsers(app);
 
-        app.use(passport.initialize());
-
         await connectPrisma();
         await initSessionStore();
+        startSessionCleanupJob();
         setupSession(app);
+
+        app.use(passport.initialize());
+        app.use(passport.session());
 
         setupSwagger(app);
         setupHealthCheck(app);
 
-        // Register API routes here
+
         app.use('/api/v1/media', mediaRouter);
         app.use('/api/v1/auth', authRouter);
 

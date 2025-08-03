@@ -10,12 +10,43 @@ import {
     SESSION_PREFIX,
 } from '../config/env.config.js';
 import { createHttpError } from '../middlewares/errorHandler.middleware.js';
+import { SessionService } from './session.service.js';
 
-async function getSession(sessionId) {
-    const redis = getRedisClient();
-    const sessionRaw = await redis.get(`${SESSION_PREFIX}${sessionId}`);
-    if (!sessionRaw) throw createHttpError('SESSION_NOT_FOUND', 'Session not found', 401);
-    return JSON.parse(sessionRaw);
+async function getTokenSession(sessionId, createIfNotExists = false) {
+    try {
+        const redis = getRedisClient();
+        const sessionKey = `${SESSION_PREFIX}${sessionId}`;
+        const sessionRaw = await redis.get(sessionKey);
+
+        const redisSession = JSON.parse(sessionRaw);
+
+        let expressSession = null;
+        try {
+            expressSession = await SessionService.getSessionData(sessionId);
+        } catch (err) {
+            serverLogger.warn('Express Session konnte nicht abgerufen werden', {
+                sessionId,
+                error: err?.message,
+            });
+        }
+
+        const mergedSession = {
+            ...(expressSession || {}),
+            ...redisSession,
+        };
+
+        if (!mergedSession.csrfToken) {
+            serverLogger.warn('CSRF-Token fehlt in der Session', { sessionId });
+        }
+
+        return mergedSession;
+    } catch (err) {
+        serverLogger.error('Fehler beim Abrufen der Token-Session', {
+            error: err?.message,
+            sessionId,
+        });
+        throw err;
+    }
 }
 
 function verifyJwt(token, secret, type) {
@@ -42,14 +73,14 @@ async function generateTokens(userId) {
         { EX: parseExpiryToSeconds(REFRESH_TOKEN_EXPIRY) },
     );
     serverLogger.info('Tokens generated', { userId, sessionId });
-    return { accessToken, refreshToken, csrfToken, sessionId };
+    return { accessToken, refreshToken, csrfToken, sessionId, id: sessionId };
 }
 
 async function validateAccessToken(token) {
     if (!token) throw createHttpError('TOKEN_MISSING', 'Access token is missing', 401);
     const payload = verifyJwt(token, ACCESS_TOKEN_SECRET, 'ACCESS');
     if (!payload.sessionId || !payload.userId) throw createHttpError('TOKEN_PAYLOAD_INVALID', 'Token payload invalid', 401);
-    await getSession(payload.sessionId);
+    await getTokenSession(payload.sessionId, false);
     return payload;
 }
 
@@ -57,58 +88,55 @@ async function validateRefreshToken(token) {
     if (!token) throw createHttpError('TOKEN_MISSING', 'Refresh token is missing', 401);
     const payload = verifyJwt(token, REFRESH_TOKEN_SECRET, 'REFRESH');
     if (!payload.sessionId || !payload.userId) throw createHttpError('TOKEN_PAYLOAD_INVALID', 'Token payload invalid', 401);
-    const session = await getSession(payload.sessionId);
+    const session = await getTokenSession(payload.sessionId);
     if (session.refreshToken !== token) throw createHttpError('REFRESH_TOKEN_MISMATCH', 'Refresh token mismatch', 401, { sessionId: payload.sessionId });
     return payload;
 }
 
 async function validateCsrfToken(sessionId, csrfToken) {
     if (!sessionId || !csrfToken) throw createHttpError('CSRF_PARAMS_MISSING', 'Session ID or CSRF token is missing', 403);
-    const session = await getSession(sessionId);
+    const session = await getTokenSession(sessionId);
+    console.log('Validating CSRF token for session', session, 'with token', csrfToken);
     if (session.csrfToken !== csrfToken) throw createHttpError('CSRF_TOKEN_MISMATCH', 'CSRF token mismatch', 403, { sessionId });
     return true;
 }
 
-async function revokeSession(sessionId) {
-    if (!sessionId) throw createHttpError('SESSION_ID_MISSING', 'Session ID is missing', 400);
-    const redis = getRedisClient();
-    const result = await redis.del(`${SESSION_PREFIX}${sessionId}`);
-    if (result === 0) throw createHttpError('SESSION_NOT_FOUND', 'Session not found', 404);
-    serverLogger.info('Session revoked', { sessionId });
-    return true;
-}
-
-async function rotateRefreshToken(oldRefreshToken) {
-    const payload = await validateRefreshToken(oldRefreshToken);
-    await revokeSession(payload.sessionId);
-    return await generateTokens(payload.userId);
-}
-
-async function invalidateSession(sessionId) {
-    if (!sessionId) throw createHttpError('SESSION_ID_MISSING', 'Session ID is missing', 400);
-    const redis = getRedisClient();
-    await redis.del(`${SESSION_PREFIX}${sessionId}`);
-}
-
 async function refreshAccessToken(refreshToken) {
     const payload = await validateRefreshToken(refreshToken);
-    const session = await getSession(payload.sessionId);
-    if (session.refreshToken !== refreshToken) throw createHttpError('INVALID_REFRESH_TOKEN', 'Refresh token does not match session', 401);
+    const session = await getTokenSession(payload.sessionId);
+
+    if (session.refreshToken !== refreshToken)
+        throw createHttpError('INVALID_REFRESH_TOKEN', 'Refresh token does not match session', 401);
+
     const accessToken = jwt.sign({
         userId: payload.userId,
         sessionId: payload.sessionId,
     }, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
-    session.refreshToken = jwt.sign({
+
+    const newRefreshToken = jwt.sign({
         userId: payload.userId,
         sessionId: payload.sessionId,
     }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRY });
+
+    session.refreshToken = newRefreshToken;
+
     const redis = getRedisClient();
-    await redis.set(`${SESSION_PREFIX}${payload.sessionId}`, JSON.stringify(session), { EX: parseExpiryToSeconds(REFRESH_TOKEN_EXPIRY) });
-    return { accessToken, csrfToken: session.csrfToken, sessionId: payload.sessionId };
+    await redis.set(
+        `${SESSION_PREFIX}${payload.sessionId}`,
+        JSON.stringify(session),
+        { EX: parseExpiryToSeconds(REFRESH_TOKEN_EXPIRY) },
+    );
+
+    return {
+        accessToken,
+        refreshToken: newRefreshToken,
+        csrfToken: session.csrfToken,
+        sessionId: payload.sessionId,
+    };
 }
 
 async function getCsrfToken(sessionId) {
-    const session = await getSession(sessionId);
+    const session = await getTokenSession(sessionId);
     return { csrfToken: session.csrfToken };
 }
 
@@ -125,8 +153,7 @@ export const TokenService = {
     generateTokens,
     validateAccessToken,
     validateCsrfToken,
-    invalidateSession,
     refreshAccessToken,
-    revokeSession,
     getCsrfToken,
+    invalidateSession: SessionService.invalidateSession,
 };
