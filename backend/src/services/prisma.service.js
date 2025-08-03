@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { dbLogger } from './logger.service.js';
+import { consoleLogger, dbLogger } from './logger.service.js';
 
 const globalForPrisma = globalThis;
 
@@ -23,6 +23,7 @@ export async function connectPrisma() {
     try {
         await prisma.$connect();
         dbLogger.info('Prisma DB connection established');
+        consoleLogger.info('Prisma DB client connected');
     } catch (err) {
         dbLogger.error('Prisma DB connection error', { error: err?.message ?? err });
         throw new Error('DB connection failed');
