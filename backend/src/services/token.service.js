@@ -37,11 +37,12 @@ async function getTokenSession(sessionId, createIfNotExists = false) {
             });
         }
 
-        // Daten aus beiden Quellen zusammenführen, wobei Redis-Daten Priorität haben
         const mergedSession = {
             ...(expressSession || {}),
             ...redisSession,
         };
+
+        console.log('mergedSession', mergedSession);
 
         if (!mergedSession.csrfToken) {
             serverLogger.warn('CSRF-Token fehlt in der Session', { sessionId });
