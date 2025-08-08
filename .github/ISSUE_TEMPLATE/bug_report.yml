@@ -1,0 +1,50 @@
+name: "Report a bug"
+description: "Help us fix a bug."
+labels:
+  - bug
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug and the expected behavior.
+      placeholder: "When I do X, Y happens. Expected: Z."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. … 2. … 3. …"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version/Commit
+      placeholder: "e.g., main@<commit>, Docker tag"
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Backend (Node/Express)
+        - Database/Prisma
+        - Auth/JWT
+        - Redis/Sessions
+        - Docker/Compose
+        - Other
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs/Error messages
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+    options:
+      - label: I searched for existing issues
+        required: true
+      - label: I can reproduce the issue
+      - label: I can provide a minimal reproduction

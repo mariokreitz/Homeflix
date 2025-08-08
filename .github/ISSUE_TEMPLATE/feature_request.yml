@@ -1,0 +1,39 @@
+name: "Feature request"
+description: "Propose an improvement or a new feature."
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem/Motivation
+      description: What problem should be solved?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the desired solution.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Area
+      options:
+        - label: Backend (API/Express)
+        - label: Auth/Permissions
+        - label: Database/Prisma
+        - label: Redis/Sessions
+        - label: Docker/Infra
+        - label: Docs/DevEx
+  - type: input
+    id: related
+    attributes:
+      label: Related issues/PRs
+      placeholder: "#123, #456"
