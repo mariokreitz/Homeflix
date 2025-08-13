@@ -1,9 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Footer } from './core/components/footer/footer';
 import { Header } from './core/components/header/header';
-import { Auth } from './core/services/auth';
-import { User } from './core/services/user';
 
 @Component({
     selector: 'app-root',
@@ -17,20 +15,17 @@ import { User } from './core/services/user';
     templateUrl: './app.html',
 })
 export class App implements OnInit {
-    private readonly auth = inject(Auth);
-    private readonly user = inject(User);
+    private readonly router: Router = inject(Router);
 
     public ngOnInit(): void {
-        this.auth.verifySession().subscribe({
-            next: (response) => {
-                if (response?.success && response.data?.sessionId) {
-                    // Optional: Userdaten nachladen, falls nötig
-                    // this.user.setUser(...);
-                }
-            },
-            error: () => {
-                this.user.clearUser();
-            },
+        this.router.events.subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'instant',
+                });
+            }
         });
     }
 }

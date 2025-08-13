@@ -8,3 +8,18 @@
         object-position: top;
     }
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+body > * {
+    flex-grow: 1;
+}
+
+app-root, .content {
+    display: flex;
+    flex-direction: column;
+}

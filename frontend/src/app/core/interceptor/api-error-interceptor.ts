@@ -13,13 +13,7 @@ export class ApiErrorInterceptor implements HttpInterceptor {
               const error: ApiErrorResponse<ErrorResponse> = responseError.error;
 
               if (environment.production) return throwError((): string => error?.message);
-              if (!error || responseError.status === 0) {
-                  console.debug({
-                      status: responseError.status,
-                      message: responseError.statusText,
-                      url: responseError.url,
-                  });
-              } else {
+              if (error) {
                   console.debug(error);
               }
 
